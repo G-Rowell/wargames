@@ -1,0 +1,47 @@
+\documentclass[a4paper]{article}
+
+\usepackage{listings}
+
+\newcommand{\pass}[1]{Password to enter: \textit{#1}\\}
+
+\begin{document}
+\title{Work \& documentation notes of various wargames}
+\author{Galen Rowell}
+\maketitle
+
+
+\section{Bandit}
+\subsection{Levels}
+
+\subsubsection{bandit0}
+\pass{bandit0}
+Challenge: Solved using the SSH command, which included use of flags to set user \& port.\\
+\begin{lstlisting}[language=Bash]
+ssh bandit0@bandit.labs.overthewire.org -p 2220
+\end{lstlisting}
+
+\subsubsection{bandit1}
+\pass{boJ9jbbUNNfktd78OOpsqOltutMc3MY1}
+Challenge: Reading a file named '-', this was problematic due to many common shell commands using '-' to prefix an option or flag.\\
+\begin{lstlisting}[language=Bash]
+cat ./-
+\end{lstlisting}
+
+\subsubsection{bandit2}
+Challenge: there are spaces in the password filename\\
+Password to enter: CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9
+\subsubsection{bandit3}
+Challenge: password file is a 'dotfile' (prepended by '.' and hidden) and in a sub-directory of home\\
+Password to enter: UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK
+\subsubsection{bandit4}
+Challenge: Password is hidden in one of '/home/bandit4/inhere/-file{0,9}'. They contain special shell characters that interfere with the terminal environment. The use of 'less' aids, as it prompts before reading a binary file and provides a somewhat isolated viewing environment.\\
+Password to enter: pIwrPrtPN36QITSp3EQaw936yaFoFgAB
+\subsubsection{bandit5}
+Challenge: The password is in \\
+Password to enter: koReBOKuIDDepwhWk7jZC0RTdopnAYKh
+
+Links
+\begin{enumerate}
+\item SSHPass: https://askubuntu.com/questions/224181/how-do-i-include-a-password-with-ssh-command-want-to-make-shell-script
+\end{enumerate}
+\end{document}
