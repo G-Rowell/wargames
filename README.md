@@ -15,6 +15,14 @@ There are also shell scripts that execute the commands used to solve each level.
 [OverTheWire Wargames](https://overthewire.org/wargames/)
 + [Bandit](https://overthewire.org/wargames/bandit/)
 
+## Requirements
+
+The scripts use sshpass to supply the passwords to the ssh connection,
+on Debain based systems run:
+```
+sudo apt install sshpass
+```
+
 ## Installation
 
 ```bash
