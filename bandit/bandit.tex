@@ -21,7 +21,7 @@
     stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
     %stringstyle=\color{red},     % string literal style
     tabsize=2,                     % sets default tabsize to 2 spaces
-    morekeywords={ssh, ls}
+    morekeywords={ssh, ls, less}
 }
 
 \newcommand{\pass}[1]{\textbf{Password to enter:} \textit{#1}\\}
@@ -64,14 +64,18 @@ cat spaced\ filename
 
 \subsubsection{bandit3}
 \pass{UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK}
-\chall The file is prepended by a '.', which causes it to be hidden from most views. The \textit{-A} flag for \textbf{ls} will show all hidden files bar '.' \& '..', which are part of the directory itself.
+\chall The file is prepended by a '.', which causes it to be hidden from most views. The \textit{-A} flag for \textbf{ls} will show all hidden files except '.' \& '..', which are part of the directory itself.
 \begin{lstlisting}
 ls -A1
 \end{lstlisting}
 
 \subsubsection{bandit4}
 \pass{pIwrPrtPN36QITSp3EQaw936yaFoFgAB}
-\chall Password is hidden in one of '/home/bandit4/inhere/-file{0,9}'. They contain special shell characters that interfere with the terminal environment. The use of 'less' aids, as it prompts before reading a binary file and provides a somewhat isolated viewing environment.
+\chall The file is hidden in one of '~/inhere/-file{0,9}'. They contain special characters that interfere with the terminal environment. The use of 'less' aids, as it prompts before reading a binary file and provides somewhat of a sandbox to prevent the tty from being broken.
+\begin{lstlisting}
+less ./-file0[0-9]
+\end{lstlisting}
+\textit{Note: use :n when inside} \textbf{less} \textit{to go the next file}
 
 \subsubsection{bandit5}
 \pass{koReBOKuIDDepwhWk7jZC0RTdopnAYKh}
