@@ -1,0 +1,4 @@
+ls
+cd inhere
+ls -A1
+cat .hidden
