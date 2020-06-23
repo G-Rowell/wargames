@@ -1,0 +1,5 @@
+ls
+cd inhere
+ls -lA
+echo "use less ./-file0[0-9]"
+cat ./-file07
