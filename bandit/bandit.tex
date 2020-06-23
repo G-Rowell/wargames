@@ -1,9 +1,33 @@
 \documentclass[a4paper]{article}
 
 \usepackage{listings}
+\lstset{ %Src: https://tex.stackexchange.com/questions/499219/remove-ugly-space-under-lstlisting
+    backgroundcolor=\color{gray!10},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+    %basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+    breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+    breaklines=true,                 % sets automatic line breaking
+    commentstyle=\color{cyan},    % comment style
+    escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+    extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+    keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+    %keywordstyle=\color{darkblue},       % keyword style
+    language=bash,       			  % the language of the code
+    % numbers=left,             
+    otherkeywords={xxx},
+    numbersep=5pt,                   % how far the line-numbers are from the code
+    showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+    showstringspaces=false,          % underline spaces within strings only
+    showtabs=false,                  % show tabs within strings adding particular underscores
+    stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+    %stringstyle=\color{red},     % string literal style
+    tabsize=2,                     % sets default tabsize to 2 spaces
+    morekeywords={ssh, ls}
+}
 
 \newcommand{\pass}[1]{\textbf{Password to enter:} \textit{#1}\\}
 \newcommand{\chall}{\textbf{Challenge:} }
+
+\usepackage{xcolor}
 
 \begin{document}
 \title{Work \& documentation notes of various wargames}
@@ -17,24 +41,33 @@
 \subsubsection{bandit0}
 \pass{bandit0}
 \chall Solved using the SSH command, which included use of flags to set user \& port.
-\begin{lstlisting}[language=Bash]
+\begin{lstlisting}
 ssh bandit0@bandit.labs.overthewire.org -p 2220
 \end{lstlisting}
 
 \subsubsection{bandit1}
 \pass{boJ9jbbUNNfktd78OOpsqOltutMc3MY1}
 \chall Reading a file named '-', this was problematic due to many common shell commands using '-' to prefix an option or flag.
-\begin{lstlisting}[language=Bash]
+\begin{lstlisting}
 cat ./-
 \end{lstlisting}
 
 \subsubsection{bandit2}
 \pass{CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9}
-\chall there are spaces in the password filename
+\chall With spaces in a filename, shell programs will interpret the input as several arguments (instead of one space-delimited string). This issue can be solved two ways.
+\begin{lstlisting}
+cat 'spaced filename'
+\end{lstlisting}
+\begin{lstlisting}
+cat spaced\ filename
+\end{lstlisting}
 
 \subsubsection{bandit3}
 \pass{UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK}
-\chall password file is a 'dotfile' (prepended by '.' and hidden) and in a sub-directory of home
+\chall The file is prepended by a '.', which causes it to be hidden from most views. The \textit{-A} flag for \textbf{ls} will show all hidden files bar '.' \& '..', which are part of the directory itself.
+\begin{lstlisting}
+ls -A1
+\end{lstlisting}
 
 \subsubsection{bandit4}
 \pass{pIwrPrtPN36QITSp3EQaw936yaFoFgAB}
