@@ -61,7 +61,7 @@ sshpass -p "$pass" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o Stri
 #####################################################################
 #Final output & cleanup of temporary files
 
-cat .sshTemp.txt
+cat .sshTemp.txt		#TODO: Handle colours properly (cat doesn't recognise colours)
 rm .sshTemp.txt
 rm "$parsedScriptFile"
 
