@@ -1,0 +1,3 @@
+ls
+ls -Al -R | grep --color -C 5 -e '1033'
+cat inhere/maybehere07/.file2
