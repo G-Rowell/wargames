@@ -21,7 +21,7 @@
     stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
     %stringstyle=\color{red},     % string literal style
     tabsize=2,                     % sets default tabsize to 2 spaces
-    morekeywords={ssh, ls, less}
+    morekeywords={ssh, ls, less, grep}
 }
 
 \newcommand{\pass}[1]{\textbf{Password to enter:} \textit{#1}\\}
@@ -79,7 +79,26 @@ less ./-file0[0-9]
 
 \subsubsection{bandit5}
 \pass{koReBOKuIDDepwhWk7jZC0RTdopnAYKh}
-\chall The password is in 
+\chall The file is within one of many sub-folders, with human readable encoding and a file size of '1033' bytes. The use of \textbf{ls} with the recursive flag \textit{-R}, combined with \textbf{grep} to select the file with the given size solves this problem.
+\begin{lstlisting}
+ls -Al -R | grep --color -C 5 -e '1033'
+\end{lstlisting}
+
+\subsubsection{bandit6}
+\pass{DXjZPULLxYr17uwoI01bNLQbtFemEgo7}
+\chall 
+
+\subsubsection{bandit7}
+\pass{ }
+\chall 
+
+\subsubsection{bandit8}
+\pass{ }
+\chall 
+
+\subsubsection{bandit9}
+\pass{ }
+\chall 
 
 \subsection{Links \& resources}
 \begin{enumerate}
