@@ -21,7 +21,7 @@
     stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
     %stringstyle=\color{red},     % string literal style
     tabsize=2,                     % sets default tabsize to 2 spaces
-    morekeywords={ssh, ls, less, grep}
+    morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64}
 }
 
 \newcommand{\pass}[1]{\textbf{Password to enter:} \textit{#1}\\}
@@ -40,7 +40,7 @@
 
 \subsubsection{bandit0}
 \pass{bandit0}
-\chall Solved using the SSH command, which included use of flags to set user \& port.
+\chall Solved using the \textbf{ssh} command, which included use of flags to set user \& port.
 \begin{lstlisting}
 ssh bandit0@bandit.labs.overthewire.org -p 2220
 \end{lstlisting}
@@ -71,11 +71,11 @@ ls -A1
 
 \subsubsection{bandit4}
 \pass{pIwrPrtPN36QITSp3EQaw936yaFoFgAB}
-\chall The file is hidden in one of '~/inhere/-file{0,9}'. They contain special characters that interfere with the terminal environment. The use of 'less' aids, as it prompts before reading a binary file and provides somewhat of a sandbox to prevent the tty from being broken.
+\chall The file is hidden in one of '~/inhere/-file{0,9}'. They contain special characters that interfere with the terminal environment. The use of \textbf{less} aids, as it prompts before reading a binary file and provides somewhat of a sandbox to prevent the tty from being broken.
 \begin{lstlisting}
 less ./-file0[0-9]
 \end{lstlisting}
-\textit{Note: use :n when inside} \textbf{less} \textit{to go the next file}
+\textit{Note: use :n when inside \textbf{less} to go the next file}
 
 \subsubsection{bandit5}
 \pass{koReBOKuIDDepwhWk7jZC0RTdopnAYKh}
@@ -86,19 +86,54 @@ ls -Al -R | grep --color -C 5 -e '1033'
 
 \subsubsection{bandit6}
 \pass{DXjZPULLxYr17uwoI01bNLQbtFemEgo7}
-\chall 
+\chall The file is somewhere on the server, so we should search recursively from the root of the drive. We are given the owner name, group name and size of the file, which we can plug into \textbf{find} to find the file.
+\begin{lstlisting}
+find / -group bandit6 -size 33c 2>&1 | grep -v "Permission denied"
+\end{lstlisting}
+\textit{Note: The use of a terminal redirect and \textbf{grep} remove the output of excessive file permission warnings}
 
 \subsubsection{bandit7}
-\pass{ }
-\chall 
+\pass{HKBPTKQnIay4Fw76bEy8PVxKEDQRKTzs}
+\chall This level is a simple grep search for the word \textit{millionth} in a large keyword text file.
 
 \subsubsection{bandit8}
-\pass{ }
-\chall 
+\pass{cvX2JJa4CFALtqS87jk27qwqGhBM9plV}
+\chall The password is the only line that occurs once within an unordered text file.
+\begin{lstlisting}
+sort data.txt | uniq -u
+\end{lstlisting}
+\textit{Note: The -u flag of \textbf{uniq} ensures only lines of 1 occurrence are printed}
 
 \subsubsection{bandit9}
-\pass{ }
-\chall 
+\pass{UsvVyFSfZZWbi6wgC7dAFyFuR6jQQUhR}
+\chall The given file is a binary encoded file, IE. it is not in plaintext or easy to read. \textbf{strings} will only print human-readable strings from a given input, and the use of \textbf{grep} will limit the output to a manageable size.
+\begin{lstlisting}
+strings data.txt | grep -Ee [=]+
+\end{lstlisting}
+\textit{Note: The [=]+ pattern of \textbf{grep} searches for one or more occurances of \textit{=} in each line, EG. \textit{=}, \textit{====} or \textit{========}}
+
+\subsubsection{bandit10}
+\pass{truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk}
+\chall The file is encoded in base 64, which can be encoded and decoded using the \textbf{base64} program.
+\begin{lstlisting}
+base64 -d data.txt
+\end{lstlisting}
+
+\subsubsection{bandit11}
+\pass{}
+\chall
+
+\subsubsection{bandit12}
+\pass{}
+\chall
+
+\subsubsection{bandit14}
+\pass{}
+\chall
+
+\subsubsection{bandit14}
+\pass{}
+\chall
 
 \subsection{Links \& resources}
 \begin{enumerate}
