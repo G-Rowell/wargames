@@ -37,7 +37,7 @@ fi
 
 user="bandit$1"
 pass=`cat banditPasswords.txt | grep "^$1 .*$" | cut -d' ' -f2`
-scriptFile="$user.script"
+scriptFile="scripts/$user.script"
 parsedScriptFile=".ssh$user.script"
 
 #####################################################################
