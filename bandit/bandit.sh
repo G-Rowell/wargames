@@ -6,9 +6,11 @@
 #####################################################################
 #Script input validation
 
-if [ $# -ne 1 ]
+if [ $# -eq 0 ]
 then
 	echo "$0: usage: $0 <bandit level number>" >&2
+	echo "$0: levels with scripts"
+	ls -1v scripts | sed 's/^/   /g' | sed 's/\.script//g'
 	exit 1
 fi
 
@@ -18,9 +20,16 @@ then
 	exit 1
 fi
 
-if [ $1 -lt 0 -o $1 -gt 34 ]  #There are 0-34 bandit levels
+if [ $1 -lt 0 -o $1 -gt 34 ] #There are 0-34 bandit levels
 then
 	echo "$0: error: invalid level number: $1" >&2
+	exit 1
+fi
+
+highestSolvedLevel=`ls scripts -1v | tail -n1 | sed 's/\.script//' | sed 's/bandit//'`
+if [ $1 -gt $highestSolvedLevel ] 
+then	
+	echo "$0: error: no level script for given level: $1" >&2
 	exit 1
 fi
 
