@@ -21,7 +21,8 @@
     stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
     %stringstyle=\color{red},     % string literal style
     tabsize=2,                     % sets default tabsize to 2 spaces
-    morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64}
+    morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
+    				, tr}
 }
 
 \newcommand{\pass}[1]{\textbf{Password to enter:} \textit{#1}\\}
@@ -120,11 +121,14 @@ base64 -d data.txt
 \end{lstlisting}
 
 \subsubsection{bandit11}
-\pass{}
-\chall
+\pass{IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR}
+\chall The file is encoded in a ROT-13 cipher, meaning that all letters in the alphabet have been shifted 13 places. \textbf{tr} is a unix program which is used the \textbf{tr}anslate various sets of text.
+\begin{lstlisting}
+cat data.txt | tr "n-za-mN-ZA-M" "a-zA-Z"
+\end{lstlisting}
 
 \subsubsection{bandit12}
-\pass{}
+\pass{5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu}
 \chall
 
 \subsubsection{bandit14}
