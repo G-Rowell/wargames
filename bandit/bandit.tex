@@ -159,10 +159,13 @@ zcat a.bin | bzcat | zcat | tar xO | tar xO | bzcat | tar xO | zcat
 
 \subsubsection{bandit13}
 \pass{8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL}
-\chall
+\chall This is a small challenge regarding SSH keys, a private key to access the next level is given. \textbf{ssh}'s \textbf{-i} flag uses the given key to authenticate the connection.
+\begin{lstlisting}
+ssh bandit14@localhost -i sshkey.private
+\end{lstlisting}
 
 \subsubsection{bandit14}
-\pass{}
+\pass{\textbf{N/A:} ssh through bandit13 user}
 \chall
 
 \subsection{Links \& resources}
