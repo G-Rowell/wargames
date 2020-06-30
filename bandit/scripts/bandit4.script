@@ -1,5 +1,5 @@
 ls
 cd inhere
 ls -lA
-echo "use less ./-file0[0-9]"
+file ./*
 cat ./-file07

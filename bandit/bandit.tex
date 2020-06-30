@@ -80,11 +80,10 @@ ls -A1
 
 \subsubsection{bandit4}
 \pass{pIwrPrtPN36QITSp3EQaw936yaFoFgAB}
-\chall The file is hidden in one of '~/inhere/-file{0,9}'. They contain special characters that interfere with the terminal environment. The use of \textbf{less} aids, as it prompts before reading a binary file and provides somewhat of a sandbox to prevent the tty from being broken.
+\chall The file is hidden in one of '~/inhere/-file{0,9}'. They contain special characters that interfere with the terminal environment. The use of \textbf{file} aids as it lists the encoding of a given file.
 \begin{lstlisting}
-less ./-file0[0-9]
+file ./*
 \end{lstlisting}
-\textit{Note: use :n when inside \textbf{less} to go the next file}
 
 \subsubsection{bandit5}
 \pass{koReBOKuIDDepwhWk7jZC0RTdopnAYKh}
