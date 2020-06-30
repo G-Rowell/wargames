@@ -24,7 +24,7 @@
     %stringstyle=\color{red},     % string literal style
     tabsize=2,                     % sets default tabsize to 2 spaces
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
-    				, tr, mktemp, file, xxd, zcat, bzcat, tar}
+    				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc}
 }
 
 \usepackage{xcolor}
@@ -165,10 +165,24 @@ ssh bandit14@localhost -i sshkey.private
 \end{lstlisting}
 
 \subsubsection{bandit14}
-\pass{\textbf{N/A:} ssh through bandit13 user}
-\chall
+\pass{4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e}
+\chall This passwords for the next level is retreieved by sending the password for the current level to port 30,000 of the machine \textit{(IE. localhost)}. This was solved by using a dated, but universal, shell program called \href{https://en.wikipedia.org/wiki/Netcat}{\textbf{n}et \textbf{c}at}.
+\begin{lstlisting}[numbers=left]
+nc localhost 30000
+	4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e
+	Correct!
+	BfMYroe26WYalil77FoDi9qh59eK5xNr
+\end{lstlisting}
+\textit{Note: Line \#2 was entered manually, lines \#3-4 were a 'response' from port 30,000}
 
-\subsection{Links \& resources}
+\subsubsection{bandit15}
+\subsubsection{bandit16}
+\subsubsection{bandit17}
+\subsubsection{bandit18}
+\subsubsection{bandit19}
+\subsubsection{bandit20}
+
+\subsection*{Links \& resources}
 \begin{enumerate}
 \item The bandit wargame is run on a remote server, accessed by ssh. In order to write scripts to log what I executed and re-run/solve the level then a tool is needed to be able to feed the password during the handshake process. SSHref is great for this: \href{https://askubuntu.com/questions/224181/how-do-i-include-a-password-with-ssh-command-want-to-make-shell-script}{SSHPass tutorial} 
 \item When scripting, it is often useful to have a temporary directory where files can be created \& modified without the risk of littering such files about the filesystem. So a temporary directory (often in /tmp/) is useful, \href{https://code-maven.com/create-temporary-directory-on-linux-using-bash}{\textbf{mktemp}} does this:
