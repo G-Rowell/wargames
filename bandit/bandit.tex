@@ -24,7 +24,7 @@
     %stringstyle=\color{red},     % string literal style
     tabsize=2,                     % sets default tabsize to 2 spaces
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
-    				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc}
+    				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc, openssl}
 }
 
 \usepackage{xcolor}
@@ -176,15 +176,37 @@ nc localhost 30000
 \textit{Note: Line \#2 was entered manually, lines \#3-4 were a 'response' from port 30,000}
 
 \subsubsection{bandit15}
+\pass{BfMYroe26WYalil77FoDi9qh59eK5xNr}
+\chall This challenge covers the use of \textbf{openssl}, and it's broad uses as a cryptographic tool for certificate and key generation/management. \textbf{openssl} has many sub-commands, of particular note is the \textbf{s\_c lient} sub-command.
+\begin{lstlisting}
+cat bandit15 | openssl s_client -connect localhost:30001 -ign_eof
+\end{lstlisting}
+\textit{Note: the flag '-ign\_eof' is used to allow the piping from cat into the session, alternatively the text can be manually input.}
+
 \subsubsection{bandit16}
+\pass{ }
+\chall 
+
 \subsubsection{bandit17}
+\pass{ }
+\chall 
+
 \subsubsection{bandit18}
+\pass{ }
+\chall 
+
 \subsubsection{bandit19}
+\pass{ }
+\chall 
+
 \subsubsection{bandit20}
+\pass{ }
+\chall 
 
 \subsection*{Links \& resources}
 \begin{enumerate}
-\item The bandit wargame is run on a remote server, accessed by ssh. In order to write scripts to log what I executed and re-run/solve the level then a tool is needed to be able to feed the password during the handshake process. SSHref is great for this: \href{https://askubuntu.com/questions/224181/how-do-i-include-a-password-with-ssh-command-want-to-make-shell-script}{SSHPass tutorial} 
+\item The bandit wargame is run on a remote server, accessed by ssh. In order to write scripts to log what I executed and re-run/solve the level then a tool is needed to be able to feed the password during the handshake process. SSHpass is great for this: \href{https://askubuntu.com/questions/224181/how-do-i-include-a-password-with-ssh-command-want-to-make-shell-script}{SSHPass tutorial} 
+
 \item When scripting, it is often useful to have a temporary directory where files can be created \& modified without the risk of littering such files about the filesystem. So a temporary directory (often in /tmp/) is useful, \href{https://code-maven.com/create-temporary-directory-on-linux-using-bash}{\textbf{mktemp}} does this:
 	\begin{lstlisting}[title=move to the new temporary directory]
 	cd $(mktemp -d)

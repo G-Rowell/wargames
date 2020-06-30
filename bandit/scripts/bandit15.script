@@ -1,0 +1,4 @@
+cd /etc/bandit_pass
+ls -v
+cat bandit15
+cat bandit15 | openssl s_client -connect localhost:30001 -ign_eof
