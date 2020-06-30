@@ -1,0 +1,4 @@
+ls
+echo "There is no password here, to access the next level\n use the private key here to access instead" > /dev/null
+########################################
+echo "Suggested: ssh bandit14@localhost -i sshkey.private" > /dev/null
