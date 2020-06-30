@@ -65,7 +65,7 @@ done < "$scriptFile" > "$parsedScriptFile"
 # StrictHostKeyChecking=no to preve
 # bash -s (-s has bash read commands from stdin)
 
-sshpass -p "$pass" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$user"@bandit.labs.overthewire.org -p 2220 'bash -s' < "$parsedScriptFile" > .sshTemp.txt
+sshpass -p "$pass" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$user"@bandit.labs.overthewire.org -p 2220 'bash -s' < "$parsedScriptFile" 2>&1 .sshTemp.txt
 
 #####################################################################
 #Final output & cleanup of temporary files
