@@ -1,5 +1,7 @@
 \documentclass[a4paper]{article}
 
+\usepackage[margin=2.5cm]{geometry}
+
 \usepackage{listings}
 \lstset{ %Src: https://tex.stackexchange.com/questions/499219/remove-ugly-space-under-lstlisting
     backgroundcolor=\color{gray!10},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
@@ -22,13 +24,19 @@
     %stringstyle=\color{red},     % string literal style
     tabsize=2,                     % sets default tabsize to 2 spaces
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
-    				, tr}
+    				, tr, mktemp, file, xxd, zcat, bzcat, tar}
 }
+
+\usepackage{xcolor}
+
+\usepackage{hyperref} %for hyperlinks
+\hypersetup{
+	colorlinks=true,    
+	urlcolor=blue,
+}  
 
 \newcommand{\pass}[1]{\textbf{Password to enter:} \textit{#1}\\}
 \newcommand{\chall}{\textbf{Challenge:} }
-
-\usepackage{xcolor}
 
 \begin{document}
 \title{Work \& documentation notes of various wargames}
@@ -129,10 +137,28 @@ cat data.txt | tr "n-za-mN-ZA-M" "a-zA-Z"
 
 \subsubsection{bandit12}
 \pass{5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu}
-\chall
+\chall The given file is a hexdump of a binary file, which is a compressed \textbf{gzip} file. The \textbf{gzip} file is itself compressed many times with \textbf{gzip, bzip2} \& \textbf{tar}. One of the best ways to discover what encoding a file has is to run \textbf{file} on the given file, as well as visual inspection with \textbf{less}.
+\\\\
+The methodology used to solve the level was to inspect the file encoding using \textbf{file}, find the appropriate decompression program, then repeat until the end result was the final plain-text.
+\\\\
+\textbf{gzip} has a 'unix-pipe' program version named \textbf{zcat}.\\
+\textbf{bzip2} has a 'unix-pipe' program version named \textbf{bzcat}.\\
+\textbf{tar} acts like a 'unix-pipe' program with the arguments \textbf{tar xO}.
+\\
+The use of these \textit{unix-pipe} versions allow use to pipe the input through \textit{std-in} and have the decompressed output sent to \textit{std-out}.
+\begin{lstlisting}[title=to uncompress a hexdump]
+xxd -r data.txt a.bin
+\end{lstlisting}
+\begin{lstlisting}[title=to test the file encoding/type from std-in]
+file -
+\end{lstlisting}
+\begin{lstlisting}[title=the series of decompression required]
+xxd -r data.txt a.bin
+zcat a.bin | bzcat | zcat | tar xO | tar xO | bzcat | tar xO | zcat
+\end{lstlisting}
 
-\subsubsection{bandit14}
-\pass{}
+\subsubsection{bandit13}
+\pass{8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL}
 \chall
 
 \subsubsection{bandit14}
@@ -141,6 +167,13 @@ cat data.txt | tr "n-za-mN-ZA-M" "a-zA-Z"
 
 \subsection{Links \& resources}
 \begin{enumerate}
-\item SSHPass: https://askubuntu.com/questions/224181/how-do-i-include-a-password-with-ssh-command-want-to-make-shell-script
+\item The bandit wargame is run on a remote server, accessed by ssh. In order to write scripts to log what I executed and re-run/solve the level then a tool is needed to be able to feed the password during the handshake process. SSHref is great for this: \href{https://askubuntu.com/questions/224181/how-do-i-include-a-password-with-ssh-command-want-to-make-shell-script}{SSHPass tutorial} 
+\item When scripting, it is often useful to have a temporary directory where files can be created \& modified without the risk of littering such files about the filesystem. So a temporary directory (often in /tmp/) is useful, \href{https://code-maven.com/create-temporary-directory-on-linux-using-bash}{\textbf{mktemp}} does this:
+	\begin{lstlisting}[title=move to the new temporary directory]
+	cd $(mktemp -d)
+	\end{lstlisting}
+	\begin{lstlisting}[title=store the new temporary directory path]
+	tmp_dir=$(mktemp -d)
+	\end{lstlisting}
 \end{enumerate}
 \end{document}

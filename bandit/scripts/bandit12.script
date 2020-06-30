@@ -1,0 +1,7 @@
+ls
+cd $(mktemp -d)
+cp ~/data.txt ./
+xxd -r data.txt a.bin
+file a.bin
+zcat a.bin | bzcat | zcat | tar xO | tar xO | bzcat | tar xO | zcat | file -
+zcat a.bin | bzcat | zcat | tar xO | tar xO | bzcat | tar xO | zcat
