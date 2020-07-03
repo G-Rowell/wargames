@@ -198,10 +198,13 @@ diff passwords.new passwords.old
 
 \subsubsection{bandit18}
 \pass{kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd}
-\chall 
+\chall The login shell environment for level 18 automatically logs the user out. This prevents users from entering in any commands but is solved by using a feature of \textbf{ssh}, in which a command can be specified (instead of invoking a login shell).
+\begin{lstlisting}
+ssh bandit18@bandit.labs.overthewire.org -p 2220 /bin/sh
+\end{lstlisting}
 
 \subsubsection{bandit19}
-\pass{ }
+\pass{IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x}
 \chall 
 
 \subsubsection{bandit20}
