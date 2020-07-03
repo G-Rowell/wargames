@@ -45,7 +45,7 @@ fi
 #Variable setup
 
 user="bandit$1"
-pass=`cat banditPasswords.txt | grep "^$1 .*$" | cut -d' ' -f2`
+pass=`cat passwords.txt | grep "^$1 .*$" | cut -d' ' -f2`
 scriptFile="scripts/$user.script"
 parsedScriptFile=".ssh$user.script"
 
