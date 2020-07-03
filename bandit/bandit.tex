@@ -24,7 +24,8 @@
     %stringstyle=\color{red},     % string literal style
     tabsize=2,                     % sets default tabsize to 2 spaces
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
-    				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc, openssl}
+    				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc, openssl
+    				, nmap, diff}
 }
 
 \usepackage{xcolor}
@@ -189,11 +190,14 @@ nmap -sV -p 31000-32000 localhost
 \end{lstlisting}
 
 \subsubsection{bandit17}
-\pass{ }
-\chall 
+\pass{xLYVMN9WE5zQ5vHacb0sZEVqbrp7nBTn}
+\chall This challenge is a simple use of \textbf{diff}, to find the password which is the one line of difference between the two files.
+\begin{lstlisting}
+diff passwords.new passwords.old
+\end{lstlisting}
 
 \subsubsection{bandit18}
-\pass{ }
+\pass{kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd}
 \chall 
 
 \subsubsection{bandit19}
