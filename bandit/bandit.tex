@@ -200,15 +200,20 @@ diff passwords.new passwords.old
 \pass{kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd}
 \chall The login shell environment for level 18 automatically logs the user out. This prevents users from entering in any commands but is solved by using a feature of \textbf{ssh}, in which a command can be specified (instead of invoking a login shell).
 \begin{lstlisting}
+ssh [...various flags/options...] destination [command]
 ssh bandit18@bandit.labs.overthewire.org -p 2220 /bin/sh
 \end{lstlisting}
 
 \subsubsection{bandit19}
 \pass{IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x}
-\chall 
+\chall This covers the shell programs \href{https://en.wikipedia.org/wiki/Setuid}{\textbf{setuid} \& \textbf{setgid}}. 
+
+According to Wikipedia: \textit{\textbf{setuid} and \textbf{setgid} (short for "set user ID" and "set group ID") are Unix access rights flags that allow users to run an executable with the permissions of the executable's owner or group respectively and to change behaviour in directories. They are often used to allow users on a computer system to run programs with temporarily elevated privileges in order to perform a specific task}
+
+In essence they allow a user to execute a file as if they were a different (possibly higher-privileged) user.
 
 \subsubsection{bandit20}
-\pass{ }
+\pass{GbKksEFF4yrVs6il55v6gwY5aVje5f0j}
 \chall 
 
 \subsection*{Links \& resources}
