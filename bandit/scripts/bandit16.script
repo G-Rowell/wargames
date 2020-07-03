@@ -1,0 +1,4 @@
+cd /etc/bandit_pass
+ls bandit16
+nmap -sV -p 31000-32000 localhost
+cat bandit16 | openssl s_client -connect localhost:31790 -ign_eof

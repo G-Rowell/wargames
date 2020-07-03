@@ -183,8 +183,10 @@ cat bandit15 | openssl s_client -connect localhost:30001 -ign_eof
 \textit{Note: the flag '-ign\_eof' is used to allow the piping from cat into the session, alternatively the text can be manually input.}
 
 \subsubsection{bandit16}
-\pass{ }
-\chall 
+\pass{cluFn7wTiGryunymYOu4RcffSxQluehd}
+\chall This challenge expands more upon basic TCP/IP technologies, and covers port scanning with the use of \textbf{nmap}. \textbf{nmap} is an extremely powerful and ubiquitous ip \& port scanning tool. It can be used to detect open ports and what they are running to detecting the OS a given machine is running.\begin{lstlisting}[title=scan ports 31000 32000 of localhost and attempt to discover what they are running]
+nmap -sV -p 31000-32000 localhost
+\end{lstlisting}
 
 \subsubsection{bandit17}
 \pass{ }
