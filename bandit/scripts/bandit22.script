@@ -1,0 +1,6 @@
+ls /etc/cron.d
+cat /etc/cron.d/cronjob_bandit22
+cat /usr/bin/cronjob_bandit22.sh
+echo I am user $myname | md5sum | cut -d ' ' -f 1
+echo I am user bandit23 | md5sum | cut -d ' ' -f 1
+cat /tmp/$(echo I am user bandit23 | md5sum | cut -d ' ' -f 1)

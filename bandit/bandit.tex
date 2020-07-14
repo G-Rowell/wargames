@@ -235,19 +235,16 @@ fg 1
 
 \subsubsection{bandit21}
 \pass{gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr}
-\chall The challenge requires simple inspection of a cron file, which publishes the password for the next level in a obscure \textit{/tmp/} file.
+\chall The challenge requires simple inspection of a cron file, which publishes the password for the next level in an obscure \textit{/tmp/} file.
 
 Cron is a system utility for scheduling repeated tasks \& scripts to execute at given times. \href{https://en.wikipedia.org/wiki/Cron}{\textit{'It typically automates system maintenance or administration—though its general-purpose nature makes it useful for things like downloading files from the Internet and downloading email..'}}
 
 \subsubsection{bandit22}
 \pass{Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI}
-\chall 
-\begin{lstlisting}
-
-\end{lstlisting}
+\chall This level requires analysis into a small shell script, and it's file permissions. The script uses \textbf{md5sum} to generate the name of a file inside \textit{/tmp/} in which the password is placed. When run manually it copies the password for the current level, with a small modification it will show where the next password is copied to.
 
 \subsubsection{bandit23}
-\pass{ }
+\pass{jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n}
 \chall 
 \begin{lstlisting}
 
