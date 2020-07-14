@@ -214,7 +214,12 @@ In essence they allow a user to execute a file as if they were a different (poss
 
 \subsubsection{bandit20}
 \pass{GbKksEFF4yrVs6il55v6gwY5aVje5f0j}
-\chall This level covers LINUX jobs, which enable the pausing of an active process, sending it to the background and other various features. This allows us to do things like set a server running in the background and connect to it all from the same terminal.
+\chall This level covers LINUX jobs, which enable the pausing of an active process, sending it to the background and other various features. This allows us to do things like set a server running in the background and connect to it all from the same terminal. The main issue here is a self-imposed limitation of using one \textbf{ssh} connection, it would be far more trivial if we used multiple connections.
+\begin{enumerate}
+	\item set up the server for the given executable to connect to, place it in the background
+	\item connect the executable to the server, place it in the background
+	\item bring the server into the \textbf{f}ore\textbf{g}round, send the password to our executable
+\end{enumerate}
 \begin{lstlisting}[numbers=left]
 nc -l -p 30101 &
 ./suconnect 30101 &
@@ -225,7 +230,8 @@ fg 1
 	Password matches, sending next password
 	gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
 \end{lstlisting}
-\textit{Note: Line \#5 was entered by the user}
+\textit{Note: Line \#5 was entered by the user}\\
+\textit{Note: \textbf{nc} or \textbf{netcat} varies by system and has oddities which had to be worked around for the script to function}
 
 \subsection*{Links \& resources}
 \begin{enumerate}
