@@ -1,0 +1,4 @@
+cd $(mktemp -d)
+cat /etc/bandit_pass/bandit20 | nc -l -p 30101 localhost >> log.txt &
+~/suconnect 30101 >> log.txt
+cat log.txt
