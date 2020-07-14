@@ -233,6 +233,32 @@ fg 1
 \textit{Note: Line \#5 was entered by the user}\\
 \textit{Note: \textbf{nc} or \textbf{netcat} varies by system and has oddities which had to be worked around for the script to function}
 
+\subsubsection{bandit21}
+\pass{gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr}
+\chall The challenge requires simple inspection of a cron file, which publishes the password for the next level in a obscure \textit{/tmp/} file.
+
+Cron is a system utility for scheduling repeated tasks \& scripts to execute at given times. \href{https://en.wikipedia.org/wiki/Cron}{\textit{'It typically automates system maintenance or administration—though its general-purpose nature makes it useful for things like downloading files from the Internet and downloading email..'}}
+
+\subsubsection{bandit22}
+\pass{Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI}
+\chall 
+\begin{lstlisting}
+
+\end{lstlisting}
+
+\subsubsection{bandit23}
+\pass{ }
+\chall 
+\begin{lstlisting}
+
+\end{lstlisting}
+
+\subsubsection{bandit24}
+\pass{ }
+\chall 
+\begin{lstlisting}
+
+\end{lstlisting}
 \subsection*{Links \& resources}
 \begin{enumerate}
 \item The bandit wargame is run on a remote server, accessed by ssh. In order to write scripts to log what I executed and re-run/solve the level then a tool is needed to be able to feed the password during the handshake process. SSHpass is great for this: \href{https://askubuntu.com/questions/224181/how-do-i-include-a-password-with-ssh-command-want-to-make-shell-script}{SSHPass tutorial} 
