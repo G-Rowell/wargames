@@ -25,7 +25,7 @@
     tabsize=2,                     % sets default tabsize to 2 spaces
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
     				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc, openssl
-    				, nmap, diff, suconnect}
+    				, nmap, diff, suconnect, touch, chmod, chown, cp}
 }
 
 \usepackage{xcolor}
@@ -245,13 +245,25 @@ Cron is a system utility for scheduling repeated tasks \& scripts to execute at 
 
 \subsubsection{bandit23}
 \pass{jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n}
-\chall 
-\begin{lstlisting}
-
+\chall This level had several pitfalls and difficulties, it required analysis of a cron job/script (similar to bandit22), file permissions and shell \textit{stdin \& stdout} redirection. Similar to the previous level, a cron script calls another script every minute. This particular script executes each executable inside \textit{/var/spool/bandit24}, then deletes them. Notably, if the output of the script is a new file, the script itself must ensure it is readable to other users.
+\begin{lstlisting}[title=script.sh]
+#!/bin/sh
+cat etc/bandit_pass/bandit24 > <absolute path to pass>
 \end{lstlisting}
+\begin{lstlisting}
+touch pass
+
+chmod a+rx script.sh
+chmod a+rw pass.txt
+
+cp script.sh /var/spool/bandit24
+
+cat pass.txt
+\end{lstlisting}
+\textit{Note: Due to the 1 minute scheduling of the cron script, one must wait at the most a minute before the 'pass.txt' is updated}
 
 \subsubsection{bandit24}
-\pass{ }
+\pass{UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ}
 \chall 
 \begin{lstlisting}
 
