@@ -25,7 +25,7 @@
     tabsize=2,                     % sets default tabsize to 2 spaces
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
     				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc, openssl
-    				, nmap, diff, suconnect, touch, chmod, chown, cp}
+    				, nmap, diff, suconnect, touch, chmod, chown, cp, cut}
 }
 
 \usepackage{xcolor}
@@ -264,10 +264,23 @@ cat pass.txt
 
 \subsubsection{bandit24}
 \pass{UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ}
-\chall 
-\begin{lstlisting}
-
+\chall This level required a brute-forcing attempt in order to receive the password for the next level. The daemon on port 30002 required the password of the current level and a four digit passcode.
+\textit{A note on brute-forcing:} any operation that is repeated will add to the time complexity, sometimes by an extraordinary amount. While it may be easier to include the \textbf{n}et\textbf{c}at command inside the loop, doing so would greatly increase overall execution time.
+\begin{lstlisting}[title=one line for loops in bash]
+for i in {01..05}; do echo "$i"; done
 \end{lstlisting}
+\begin{lstlisting}[title=you can pipe the output of a for loop]
+for i in {01..05}
+do
+	echo "$i"
+done | nc localhost 30002 > output.txt 2>&1
+\end{lstlisting}
+\begin{lstlisting}[title=using grep line numbers combined with bash math]
+$(( `grep -n 'Correct' $output | cut -d : -f 1` - 1 ))
+#but you probably want to assign it to a variable
+passcode=$(( `grep -n 'Correct' $output | cut -d : -f 1` - 1 ))
+\end{lstlisting}
+
 \subsection*{Links \& resources}
 \begin{enumerate}
 \item The bandit wargame is run on a remote server, accessed by ssh. In order to write scripts to log what I executed and re-run/solve the level then a tool is needed to be able to feed the password during the handshake process. SSHpass is great for this: \href{https://askubuntu.com/questions/224181/how-do-i-include-a-password-with-ssh-command-want-to-make-shell-script}{SSHPass tutorial} 

