@@ -25,7 +25,8 @@
     tabsize=2,                     % sets default tabsize to 2 spaces
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
     				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc, openssl
-    				, nmap, diff, suconnect, touch, chmod, chown, cp, cut}
+    				, nmap, diff, suconnect, touch, chmod, chown, cp, cut,
+    				more}
 }
 
 \usepackage{xcolor}
@@ -280,6 +281,49 @@ $(( `grep -n 'Correct' $output | cut -d : -f 1` - 1 ))
 #but you probably want to assign it to a variable
 passcode=$(( `grep -n 'Correct' $output | cut -d : -f 1` - 1 ))
 \end{lstlisting}
+
+\subsubsection{bandit25}
+\pass{uNG9O58gUE7snukf3bvZ0rxhtnjzSGzG}
+\chall The user is provided a ssh private key to login to the the next user \textit{bandit26}, and subsequently read the password. The challenge arises from the login shell used by \textit{bandit26}.
+
+The default shell can be modified by a user, common shells are \textbf{bash}  (\textit{/bin/bash}), \textbf{zsh} (\textit{/usr/bin/zsh}) \& \textbf{fish} (\textit{/usr/local/bin/fish}).
+
+All valid login shells installed on the system will be listed in \textit{/etc/shells}.
+
+The login shell for \textit{bandit26} is problematic, as it \textit{almost} immediately exits.
+\begin{lstlisting}[title=login shell for bandit26\, /usr/bin/showtext, numbers=left]
+#!/bin/sh
+
+export TERM=linux
+
+more ~/text.txt
+exit 0
+\end{lstlisting}
+
+This login shell exits on line 6, providing an issue as we want an interactive shell. The use of \textbf{more} however, provides us with a small exploit.
+
+\textbf{more} is used to view files within the terminal, and has several utilities built in. If the file is small and can be completely shown within the current terminal screen, then more will simply display it and immediately exit. This would cause the last line of the login shell to execute, and cancel the session.
+
+The easiest work-around is to shrink the size of the terminal within the screen, ensuring the \textbf{more} cannot display \textit{text.txt}, entering \textbf{more}s '\textit{interactive}' display mode. From here we can enter \textbf{v} to enter the \textbf{Vim} editor.
+
+From within \textbf{Vim}, we can set the shell to be opened (as opposed to using the default shell) and then open a proper shell.
+\begin{lstlisting}[title=How to start a specific shell from vim, deletekeywords={set}]
+:set shell=/bin/bash
+:shell
+\end{lstlisting}
+
+\subsubsection{bandit26}
+\pass{5czgV9L3Xx8JPOyRbXh6lQbmIOWvPT6Z}
+\chall
+\begin{lstlisting}
+\end{lstlisting}
+
+\subsubsection{bandit27}
+\pass{3ba3118a22e93127a4ed485be72ef5ea}
+\chall 
+\begin{lstlisting}
+\end{lstlisting}
+
 
 \subsection*{Links \& resources}
 \begin{enumerate}
