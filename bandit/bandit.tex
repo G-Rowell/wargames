@@ -242,11 +242,11 @@ Cron is a system utility for scheduling repeated tasks \& scripts to execute at 
 
 \subsubsection{bandit22}
 \pass{Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI}
-\chall This level requires analysis into a small shell script, and it's file permissions. The script uses \textbf{md5sum} to generate the name of a file inside \textit{/tmp/} in which the password is placed. When run manually it copies the password for the current level, with a small modification it will show where the next password is copied to.
+\chall This level requires analysis into a small shell script, and it's file permissions. The script uses \textbf{md5sum} to generate the name of a file inside \textit{/tmp/} in which the password is placed. When run manually it copies the password for the current level, being a script owned by the user \textit{bandit23} it will publish the password for that user intermittently.
 
 \subsubsection{bandit23}
 \pass{jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n}
-\chall This level had several pitfalls and difficulties, it required analysis of a cron job/script (similar to bandit22), file permissions and shell \textit{stdin \& stdout} redirection. Similar to the previous level, a cron script calls another script every minute. This particular script executes each executable inside \textit{/var/spool/bandit24}, then deletes them. Notably, if the output of the script is a new file, the script itself must ensure it is readable to other users.
+\chall This level had several pitfalls and difficulties, it required analysis of a cron job/script (similar to \textit{bandit22}), file permissions and shell \textit{stdin \& stdout} redirection. Similar to the previous level, a cron script calls another script every minute. This particular script executes each executable inside \textit{/var/spool/bandit24}, then deletes them. Notably, if the output of the script is a new file, the script itself must ensure it is readable to other users.
 \begin{lstlisting}[title=script.sh]
 #!/bin/sh
 cat etc/bandit_pass/bandit24 > <absolute path to pass>
@@ -314,9 +314,7 @@ From within \textbf{Vim}, we can set the shell to be opened (as opposed to using
 
 \subsubsection{bandit26}
 \pass{5czgV9L3Xx8JPOyRbXh6lQbmIOWvPT6Z}
-\chall
-\begin{lstlisting}
-\end{lstlisting}
+\chall This level is trivial, as it combines the \textbf{SETUID} challenge of \textit{bandit19} and the login shell challenge of \textit{bandit25}. The password for the next level can be read with a small SETUID script.
 
 \subsubsection{bandit27}
 \pass{3ba3118a22e93127a4ed485be72ef5ea}
