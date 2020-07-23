@@ -358,8 +358,6 @@ git checkout -b <new branch name>
 \subsubsection{bandit30}
 \pass{5b90576bedb2cc04c86a9e924ce42faf}
 \chall This level involved \href{https://git-scm.com/book/en/v2/Git-Basics-Tagging}{git tagging}. The tag is named \textit{secret} and is not linked to any commit or object, it merely contains the password of the next level.
-
-
 \begin{lstlisting}[title=show all objects on the remote,deletekeywords={ls}]
 git ls-remote
 \end{lstlisting}
@@ -369,6 +367,30 @@ git tag
 \begin{lstlisting}[title=show more information about a given object]
 git show <object name>
 \end{lstlisting}
+
+\subsubsection{bandit31}
+\pass{47e603bb428404d265f59c42920d81e5}
+\chall This level follows the same format of a git repository. The \textit{README.md} file prompts us to push a file with a given text content to \textit{remote/master}. When this is done the remote responds with the password.
+\begin{lstlisting}[title=my default way to add files to the index]
+git add -Av
+\end{lstlisting}
+However, there was no output from this command when it normally lists each file that it's added. We should check the \textbf{.gitignore} file.
+\begin{lstlisting}[title=contents of this specific .gitignore]
+*.txt
+\end{lstlisting}
+So we can force addition of the file with:
+\begin{lstlisting}
+git add -vf key.txt
+\end{lstlisting}
+\textit{Note: Another option could be to modify the \textit{.gitignore} and include the file with \textit{!key.txt}}
+
+
+\subsubsection{bandit32}
+\pass{56a9bf19c63d650ce78e6ec0354ee45e}
+\chall
+\begin{lstlisting}
+\end{lstlisting}
+
 
 \subsection*{Links \& resources}
 \begin{enumerate}
