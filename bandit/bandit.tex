@@ -319,7 +319,7 @@ From within \textbf{Vim}, we can set the shell to be opened (as opposed to using
 \subsubsection{bandit27}
 \pass{3ba3118a22e93127a4ed485be72ef5ea}
 \chall This level is a simple \textit{git clone} of a \textit{repo}(sitory) hosted locally. The password is in plain-text within the repository.
-\begin{lstlisting}
+\begin{lstlisting}[deletekeywords={ssh}]
 git clone ssh://bandit27-git@localhost/home/bandit27-git/repo
 \end{lstlisting}
 
@@ -357,10 +357,18 @@ git checkout -b <new branch name>
 
 \subsubsection{bandit30}
 \pass{5b90576bedb2cc04c86a9e924ce42faf}
-\chall
-\begin{lstlisting}
-\end{lstlisting}
+\chall This level involved \href{https://git-scm.com/book/en/v2/Git-Basics-Tagging}{git tagging}. The tag is named \textit{secret} and is not linked to any commit or object, it merely contains the password of the next level.
 
+
+\begin{lstlisting}[title=show all objects on the remote,deletekeywords={ls}]
+git ls-remote
+\end{lstlisting}
+\begin{lstlisting}[title=show all local tags]
+git tag
+\end{lstlisting}
+\begin{lstlisting}[title=show more information about a given object]
+git show <object name>
+\end{lstlisting}
 
 \subsection*{Links \& resources}
 \begin{enumerate}
