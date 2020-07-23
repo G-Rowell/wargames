@@ -324,13 +324,29 @@ git clone ssh://bandit27-git@localhost/home/bandit27-git/repo
 \end{lstlisting}
 
 \subsubsection{bandit28}
-\pass{}
-\chall
-\begin{lstlisting}
+\pass{0ef186ac70e04ea33b4c1853d2526fa2}
+\chall This level followed the same format of cloning a git repository. There was a plain-text file with the credentials for the next level inside, but the password was censored.
+
+There are several \textbf{git} commands to gather information about the current repo:
+\begin{lstlisting}[title=list all local \& remote branches]
+git branch -a
+\end{lstlisting}
+\begin{lstlisting}[title=show the commit history]
+git log
+\end{lstlisting}
+\begin{lstlisting}[title=show your local status\, compared to the repository]
+git status
 \end{lstlisting}
 
+\textbf{git log} showed a recent commit was made to censor the password that was mistakenly committed.
+Usage of the following recovered the needed commit:
+\begin{lstlisting}
+git reset --hard <commit number>
+\end{lstlisting}
+\textit{Note: This resets the current index \& working tree in a destructive manner and discards any unsaved changes. This is a non-issue as we aren't saving anything to the repo. \textbf{git revert} may be another appropriate option to look into}
+
 \subsubsection{bandit29}
-\pass{}
+\pass{bbc96594b4e001778eee9975372716b2}
 \chall
 \begin{lstlisting}
 \end{lstlisting}
