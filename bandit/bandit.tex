@@ -26,7 +26,7 @@
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
     				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc, openssl
     				, nmap, diff, suconnect, touch, chmod, chown, cp, cut,
-    				more}
+    				more, git}
 }
 
 \usepackage{xcolor}
@@ -318,7 +318,26 @@ From within \textbf{Vim}, we can set the shell to be opened (as opposed to using
 
 \subsubsection{bandit27}
 \pass{3ba3118a22e93127a4ed485be72ef5ea}
-\chall 
+\chall This level is a simple \textit{git clone} of a \textit{repo}(sitory) hosted locally. The password is in plain-text within the repository.
+\begin{lstlisting}
+git clone ssh://bandit27-git@localhost/home/bandit27-git/repo
+\end{lstlisting}
+
+\subsubsection{bandit28}
+\pass{}
+\chall
+\begin{lstlisting}
+\end{lstlisting}
+
+\subsubsection{bandit29}
+\pass{}
+\chall
+\begin{lstlisting}
+\end{lstlisting}
+
+\subsubsection{bandit30}
+\pass{}
+\chall
 \begin{lstlisting}
 \end{lstlisting}
 
