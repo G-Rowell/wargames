@@ -2,6 +2,8 @@
 
 \usepackage[margin=2.5cm]{geometry}
 
+\usepackage{upquote} %Fix backticks (`) and single quotes (') 
+
 \usepackage{listings}
 \lstset{ %Src: https://tex.stackexchange.com/questions/499219/remove-ugly-space-under-lstlisting
     backgroundcolor=\color{gray!10},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
@@ -9,7 +11,7 @@
     breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
     breaklines=true,                 % sets automatic line breaking
     commentstyle=\color{cyan},    % comment style
-    escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+    escapeinside={*@}{@*)},          % if you want to add LaTeX within your code
     extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
     keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
     %keywordstyle=\color{darkblue},       % keyword style
@@ -387,10 +389,20 @@ git add -vf key.txt
 
 \subsubsection{bandit32}
 \pass{56a9bf19c63d650ce78e6ec0354ee45e}
-\chall
-\begin{lstlisting}
+\chall This level has a shell which translates all letters into uppercase before execution, the subshell also had the SETUID bit set, and executed under \textit{bandit33}. We had to break out of this subshell, which provided difficulty as almost every command in Linux is lowercase.
+
+Thankfully we could start a subshell, and while the subshell doesn't display any output we can copy the password for \textit{bandit33} to a temporary file.
+\begin{lstlisting}[title=two different ways to launch a subshell with no letters]
+`$0`
+$($0)
 \end{lstlisting}
 
+
+\subsubsection{bandit33}
+\pass{c9c3199ddf4121b10cf581a98d51caee}
+\begin{center}
+This level has no challenge, it's the final level of the bandit wargame.
+\end{center}
 
 \subsection*{Links \& resources}
 \begin{enumerate}
