@@ -1,0 +1,3 @@
+ls -lA
+cd .backup
+grep 'password' bookmarks.html
