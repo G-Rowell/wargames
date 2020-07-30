@@ -1,0 +1,6 @@
+cd `mktemp -d`
+chmod a+rx .
+echo "file a" > a
+echo "file a b" > 'a b'
+ln -s /etc/leviathan_pass/leviathan3 b
+~/printfile "a b"
