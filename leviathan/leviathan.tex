@@ -158,5 +158,15 @@ SYS_exit_group(-134453124 <no return ...>
 	\begin{lstlisting}[title=store the new temporary directory path]
 	tmp_dir=$(mktemp -d)
 	\end{lstlisting}
+	
+\item Git is has many fantastic functionalities, here are some key ones:
+	\begin{lstlisting}[title=compare working tree with commited version]
+		git diff <filename> 
+	\end{lstlisting}
+	\begin{lstlisting}[title=reset working tree file to the commited version]
+		git checkout -- <filename>
+		git restore <filename>
+	\end{lstlisting}
+	\note{These two methods are destructive, and discard any changes, \textbf{git stash} may be more suitable, as it backs up the working tree/changes}
 \end{enumerate}
 \end{document}
