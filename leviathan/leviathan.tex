@@ -11,7 +11,7 @@
     breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
     breaklines=true,                 % sets automatic line breaking
     commentstyle=\color{cyan},    % comment style
-    escapeinside={*@}{@*)},          % if you want to add LaTeX within your code
+    escapeinside={(*@}{@*)},          % if you want to add LaTeX within your code
     extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
     keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
     %keywordstyle=\color{darkblue},       % keyword style
@@ -28,7 +28,7 @@
     morekeywords={ssh, ls, less, grep, find, sort, uniq, strings, base64
     				, tr, mktemp, file, xxd, zcat, bzcat, tar, nc, openssl
     				, nmap, diff, suconnect, touch, chmod, chown, cp, cut,
-    				more, git, ltrace}
+    				more, git, ltrace, ln}
 }
 
 \usepackage{xcolor}
@@ -102,7 +102,7 @@ system("/bin/cat filename"file content
 These two functions check for read permissions of the file and pass the filename to the command line receptively. The flaw in the script lies in the quotations, the double quotes around the filename are dropped for the shell call.
 
 This causes issues with a spaced filename, as \textbf{cat} will print out each argument given. This can be taken advantage of with the following:
-\begin{lstlisting}
+\begin{lstlisting}[morekeywords={printfile}]
 echo "file a" > a
 echo "file a b" > 'a b'
 ln -s /etc/leviathan_pass/leviathan3 b
@@ -112,6 +112,37 @@ ln -s /etc/leviathan_pass/leviathan3 b
 
 \subsection*{leviathan3}
 \pass{Ahdiemoo1j}
+\chall This level requires a similar methodology to \textit{leviathan1} to solve, a password is required and is compared to a string within the executable.
+Interestingly, there are several string comparison functions with \textit{strcmp()}, but with the use of \textbf{ltrace -S file.sh} the appropriate function call does not get traced. \textbf{ltrace} traces library calls, and with the \textbf{-S} flag system calls are traced as well.
+\begin{lstlisting}[numbers=left]
+ltrace -S ./level3 
+(*@\textbf{...\textit{various irrelevant setup system calls}...} @*)
+
+__libc_start_main(0x8048618, 1, 0xffffd794, 0x80486d0 <unfinished ...>
+strcmp("h0no33", "kakaka")                                 = -1
+printf("Enter the password> " <unfinished ...>
+SYS_fstat64(2004, 0xffffd080, 0xf7ee8245, 0xf7fc3960)      = 0
+SYS_brk(0xf7fc5000)                                        = 0x804b000
+SYS_brk(0xf7fc5000)                                        = 0x806c000
+<... printf resumed> )                                     = 20
+fgets( <unfinished ...>
+SYS_fstat64(2004, 0xffffd3b0, 0xf7ee8245, 0xf7fc3960)      = 0
+SYS_write(20, "Enter the password> ", 4159605747Enter the password> )          = 20
+SYS_read(1024test
+, "test\n", 4159605635)                       = 5
+<... fgets resumed> "test\n", 256, 0xf7fc55a0)             = 0xffffd5a0
+strcmp("test\n", "snlprintf\n")                            = 1
+puts("bzzzzzzzzap. WRONG" <unfinished ...>
+SYS_write(19, "bzzzzzzzzap. WRONG\n ", 4159605747bzzzzzzzzap. WRONG
+)         = 19
+<... puts resumed> )                                       = 19
+SYS_exit_group(-134453124 <no return ...>
++++ exited (status 0) +++
+\end{lstlisting}
+\note{Line \#17 is of the most interest here, the rest is irrelevant}
+
+\subsection*{leviathan4}
+\pass{vuH0coox6m}
 \chall
 \begin{lstlisting}
 \end{lstlisting}
