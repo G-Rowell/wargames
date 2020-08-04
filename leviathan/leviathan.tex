@@ -143,9 +143,17 @@ SYS_exit_group(-134453124 <no return ...>
 
 \subsection*{leviathan4}
 \pass{vuH0coox6m}
+\chall This is a simple level which requires converting binary encoding into ASCII text. The easiest solution is to copy-paste the string to an online website for conversion, an alternative is provided below using Perl.
+\begin{lstlisting}[title=\href{https://unix.stackexchange.com/a/98949}{source \& explanation}]
+echo 01000001 01000010 | perl -lape '$_=pack"(B8)*",@F'
+\end{lstlisting}
+
+\subsection*{leviathan5}
+\pass{Tith4cokei}
 \chall
 \begin{lstlisting}
 \end{lstlisting}
+
 
 \section*{Links \& resources}
 \begin{enumerate}
