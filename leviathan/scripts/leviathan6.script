@@ -1,0 +1,3 @@
+#!/bin/bash
+
+for num in {0000..9999}; do echo "$num"; /home/leviathan6/leviathan6 $num; sleep 0.001; done

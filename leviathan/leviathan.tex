@@ -157,12 +157,30 @@ ln -s /etc/leviathan_pass/leviathan6 /tmp/file.log
 
 \subsection*{leviathan6}
 \pass{UgaoFee4li}
-\chall 
-\begin{lstlisting}
+\chall This level has yet another \textit{SETUID} executable in the home directory. When prompted for use the response is:
+\begin{lstlisting}[morekeywords={leviathan6}]
+~$ ./leviathan6
+usage: ./leviathan6 <4 digit code>
 \end{lstlisting}
+As this requires brute-forcing, we'll create a script to input the 9999 possible passcode combinations:
+\begin{lstlisting}[morekeywords={leviathan6}, deletekeywords={in}]
+#!/bin/bash
+for num in {0000..9999}
+do
+	echo "$num"
+	/home/leviathan6/leviathan6 $num
+	sleep 0.001
+done
+\end{lstlisting}
+\note{This script will enter the pause when we enter the correct passcode and enter the leviathan7 shell, then resume on exit}
 
+\href{https://blvckb3vrd.wordpress.com/2015/12/15/overthewire-leviathan-level-6/}{A writeup of assembly code analysis, instead of brute-forcing}
 
-
+\subsection*{leviathan7}
+\pass{UgaoFee4li}
+\begin{center}
+This level has no challenge, it's the final level of the bandit wargame.
+\end{center}
 
 \section*{Links \& resources}
 \begin{enumerate}
