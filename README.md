@@ -14,6 +14,7 @@ There are also shell scripts that execute the commands used to solve each level.
 
 [OverTheWire Wargames](https://overthewire.org/wargames/)
 + [Bandit](https://overthewire.org/wargames/bandit/)
++ [Leviathan](https://overthewire.org/wargames/leviathan/)
 
 ## Requirements
 
