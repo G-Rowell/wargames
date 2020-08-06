@@ -7,25 +7,27 @@
 #Script helper functions
 
 function print_wargames {
+	#Args: No args
 	echo "Wargames available:"
 	cut -f 1,6 -d ',' "connections.txt" | sed -E 's/(.*?),(.*?)/\t\2: \1/'
 }
 
 function print_wargame_levels {
-	if [[ $# -ne 1 ]]	#$1-wargame
-	then
-		echo "$0: print_wargame_levels: usage: $0 <wargame>" >&2
-		exit 1
-	fi
+	#Args: $1-wargame	NOTE: Assume caller has validated wargame
+	echo "test printwargameLevles"	
+	#local levels=$(ls -1 | 
 }
 
 function valid_wargame {
+	#Args: $1-wargame	#NOTE: Exits script if the wargame is invalid, otherwise quit
 	local wargame=$(cut -f 1,2 -d ',' "connections.txt" | grep -Ee "(^$1,)|(,$1$)" | cut -f 1 -d ',')
 	if [[ -z "$wargame" ]]
 	then
 		echo "$0: error: invalid argument #1 (wargame): $1" >&2
 		exit 1
 	fi
+
+	return 0
 }
 
 #####################################################################
@@ -33,22 +35,28 @@ function valid_wargame {
 
 if [[ $# -eq 0 ]]
 then
-	echo "$0: usage: $0 [options] [wargame] [level number]" >&2
+	echo "$0: usage: $0 [options] <wargame> [level number]" >&2
 	#echo "$0: try: ./solve.sh --help for more information" >&2 #TODO: Implement?
+	echo "$0: flags: '-k' keep temporary files, will prompt for deletion on next run" >&2
+	echo "$0: flags: '-i' login to the level, instead of solving it" >&2
 	print_wargames
 	exit 1
 fi
 
-if [[ $# -eq 1 ]]	#$1-wargame $2-levelNum 
+if [[ $# -eq 1 ]]	# $1-wargame 
 then
-	echo "$0: usage: $0 <wargame>" >&2
-	echo "$0: usage: $0 <wargame> <level number>" >&2
-	exit 1
+	echo "$0: usage: $0 [options] <wargame> [level number]" >&2
+	
+	if valid_wargame "$1"
+	then
+		print_wargame_levels "$1"
+	fi
+	exit 0
 fi
 
 
-print_wargames
-print_wargame_levels
+#print_wargames
+#print_wargame_levels
 exit 0
 
 #	echo "$0: levels with scripts"
