@@ -3,7 +3,13 @@
 #This is the main script which then calls the appropriate script for the requested level
 #Author: GRowell
 
-#####################################################################
+
+################################################################################
+#Constant declarations
+
+readonly CONNECTIONS='/meta/connections.txt'
+
+################################################################################
 #Script helper functions
 
 function print_wargames {
@@ -14,13 +20,14 @@ function print_wargames {
 
 function print_wargame_levels {
 	#Args: $1-wargame	NOTE: Assume caller has validated wargame
-	echo "test printwargameLevles"	
 	#local levels=$(ls -1 | 
+	echo "Levels with scripts:"
+	ls -1v bandit/scripts | sed 's/\..*$//' | sed -E 's/^([0-9])$/0\1/' | column -c 20
 }
 
 function valid_wargame {
 	#Args: $1-wargame	#NOTE: Exits script if the wargame is invalid, otherwise quit
-	local wargame=$(cut -f 1,2 -d ',' "connections.txt" | grep -Ee "(^$1,)|(,$1$)" | cut -f 1 -d ',')
+	local wargame="$(cut -f 1,2 -d ',' "connections.txt" | grep -Ee "(^$1,)|(,$1$)" | cut -f 1 -d ',')"
 	if [[ -z "$wargame" ]]
 	then
 		echo "$0: error: invalid argument #1 (wargame): $1" >&2
@@ -29,8 +36,7 @@ function valid_wargame {
 
 	return 0
 }
-
-#####################################################################
+################################################################################
 #Script input validation
 
 if [[ $# -eq 0 ]]
@@ -39,6 +45,7 @@ then
 	#echo "$0: try: ./solve.sh --help for more information" >&2 #TODO: Implement?
 	echo "$0: flags: '-k' keep temporary files, will prompt for deletion on next run" >&2
 	echo "$0: flags: '-i' login to the level, instead of solving it" >&2
+	echo -e "\t note: these two flags are mutually exclusive" >&2
 	print_wargames
 	exit 1
 fi
@@ -55,8 +62,8 @@ then
 fi
 
 
-#print_wargames
-#print_wargame_levels
+print_wargames
+print_wargame_levels
 exit 0
 
 #	echo "$0: levels with scripts"
@@ -75,30 +82,30 @@ then
 	exit 1
 fi
 
-highestSolvedLevel=`ls scripts -1v | tail -n1 | sed 's/\.script//' | sed 's/leviathan//'`
+highestSolvedLevel="$(ls scripts -1v | tail -n1 | sed 's/\.script//' | sed 's/leviathan//')"
 if [[ $1 -gt $highestSolvedLevel ]]
 then	
 	echo "$0: error: no level script for given level: $1" >&2
 	exit 1
 fi
 
-fileCheck1=`ls -A1 | grep -Ee '\.sshTemp\.txt' > /dev/null; echo $?`
-fileCheck2=`ls -A1 | grep -Ee '\.sshleviathan[0-9]+\.script' > /dev/null; echo $?`
-if [[ $fileCheck1 -eq 0 ]] || [[ $fileCheck2 -eq 0 ]]
+fileCheck1="$(ls -A1 | grep -Ee '\.sshTemp\.txt' > /dev/null; echo $?)"
+fileCheck2="$(ls -A1 | grep -Ee '\.sshleviathan[0-9]+\.script' > /dev/null; echo $?)"
+if [[ "$fileCheck1" -eq 0 ]] || [[ "$fileCheck2" -eq 0 ]]
 then
 	echo "$0: error: a temporary file is present"
 	exit 1
 fi
 
-#####################################################################
+################################################################################
 #Variable setup
 
 user="leviathan$1"
-pass=`cat passwords.txt | grep "^$1 .*$" | cut -d' ' -f2`
+pass="$(cat passwords.txt | grep "^$1 .*$" | cut -d' ' -f2)"
 scriptFile="scripts/$user.script"
 parsedScriptFile=".ssh$user.script"
 
-#####################################################################
+################################################################################
 #Parse script file (add in echo of each command, to show what is being run)
 
 while IFS= read -r line
@@ -107,7 +114,7 @@ do
 	echo "$line"
 done < "$scriptFile" > "$parsedScriptFile"
 
-#####################################################################
+################################################################################
 #Create ssh connection, using 'sshpass' to send the password for the level,
 # LogLevel=error to prevent 
 # UserKnownHostsFile=/dev/null to prevent
@@ -116,7 +123,7 @@ done < "$scriptFile" > "$parsedScriptFile"
 
 sshpass -p "$pass" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$user"@leviathan.labs.overthewire.org -p 2223 'bash -s' < "$parsedScriptFile" > .sshTemp.txt 2>&1
 
-#####################################################################
+################################################################################
 #Final output & cleanup of temporary files
 
 if [[ $# -eq 2 -a $2 != "-nc" ]] #TODO: Fix this flag, noclean flag
@@ -128,9 +135,9 @@ fi
 
 exit 0
 
-#####################################################################
-####################Notes & past commands############################
-#####################################################################
+################################################################################
+############################Notes & past commands###############################
+################################################################################
 
 #echo "-=End of MOTD=-"
 #echo "-=Logged into server=-"
