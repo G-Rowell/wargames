@@ -6,15 +6,23 @@
 ################################################################################
 #Set strict shell options
 
-set -o errexit		#'errexit' - exit script on any error (non-0 return value)
-set -o nounset		#undefined variables are errors
-set -o pipefail		#pipe are (kinda) evaluated (read 'man bash')
+#set -o errexit		#'errexit' - exit script on any error (non-0 return value)
+#set -o nounset		#undefined variables are errors
+#set -o pipefail		#pipe are (kinda) evaluated (read 'man bash')
+
+#set -x				#Show commands as they are executed
 
 ################################################################################
 #Constant declarations
 
-readonly CONNECTIONS='/meta/connections.txt'
+readonly CONNECTIONS='meta/connections.txt'
 readonly PASSWORDS_DIR='meta/passwords/'
+
+iFlag='false'
+kFlag='false'
+wargame=''
+level=''
+#Set as readonly later
 
 ################################################################################
 #Script helper functions
@@ -22,26 +30,37 @@ readonly PASSWORDS_DIR='meta/passwords/'
 #Args: $1-error text
 function error {
 	echo "$0: error: $1" >&2
+	exit 1
+}
+
+#Args: No args
+function usage {
+	echo "$0: usage: $0 <wargame>" >&2
+	echo "$0: usage: $0 [-ik] <wargame> [level number]" >&2
+	echo "$0: flags: '-k' keep temporary files, will prompt for deletion on next run" >&2
+	echo "$0: flags: '-i' login to the level, instead of solving it" >&2
+	echo -e "\t     note: these two flags are mutually exclusive" >&2
+	print_wargames
+	#echo "$0: try: ./solve.sh --help for more information" >&2 #TODO: Implement?
 }
 
 #Args: No args
 function print_wargames {
 	echo "Wargames available:"
-	cut -f 1,6 -d ',' "connections.txt" | sed -E 's/(.*?),(.*?)/\t\2: \1/'
+	cut -f 1,6 -d ',' "$CONNECTIONS" | sed -E 's/(.*?),(.*?)/\t\2: \1/'
 }
 
 #Args: $1-wargame	NOTE: Assume caller has validated wargame
 function print_wargame_levels {
 	echo "Levels with scripts:"
-	ls -1v bandit/scripts | sed 's/\..*$//' | sed -E 's/^([0-9])$/0\1/' | column -c 20
+	ls -1v "$1/scripts" | sed 's/\..*$//' | sed -E 's/^([0-9])$/0\1/' | column -c 20
 }
 
 #Args: $1-wargame	#NOTE: Exits script if the wargame is invalid, otherwise quit
 function valid_wargame {
-	local wargame="$(cut -f 1,2 -d ',' "connections.txt" | grep -Ee "(^$1,)|(,$1$)" | cut -f 1 -d ',')"
-	if [[ -z "$wargame" ]]; then
+	local wargame="$(cut -f 1,2 -d ',' "$CONNECTIONS" | grep -Ee "(^$1,)|(,$1$)" | cut -f 1 -d ',')"
+	if [[ -z $wargame ]]; then
 		error "invalid wargame: $1"
-		exit 1
 	fi
 	return 0
 }
@@ -49,68 +68,66 @@ function valid_wargame {
 ################################################################################
 #Script input validation
 
-if [[ $# -eq 0 ]]; then
-	echo "$0: usage: $0 [-ik] <-w wargame> [-l level number]" >&2
-	#echo "$0: try: ./solve.sh --help for more information" >&2 #TODO: Implement?
-	echo "$0: flags: '-k' keep temporary files, will prompt for deletion on next run" >&2
-	echo "$0: flags: '-i' login to the level, instead of solving it" >&2
-	echo -e "\t note: these two flags are mutually exclusive" >&2
-	print_wargames
-	exit 1
-fi
-
-if [[ $# -eq 1 ]]; then# $1-wargame 
-	echo "$0: usage: $0 [options] <wargame> [level number]" >&2
-	
-	if valid_wargame "$1"; then
-		print_wargame_levels "$1"
-	fi
-	exit 0
-fi
-
-iFlag='false'
-kFlag='false'
-wargame=''
-level=''
-while getopts 'ikw:l:' flag; do
+while getopts 'ik' flag; do
 	case "${flag}" in
 		i) iFlag='true' ;;
 		k) kFlag='true' ;;
-		w) 
-
-			files="${OPTARG}" ;;
-		l) 
-			if echo $2 | grep -E -v -x -q "[0-9]+"; then
-				echo "$0: error: invalid argument #2 (level number): $1" >&2
-				exit 1
-			fi
-			if [[ $1 -lt 0 -o $1 -gt 34 ]]; then#There are 0-7 leviathan levels
-				echo "$0: error: invalid level number: $1" >&2
-				exit 1
-			fi
-			highestSolvedLevel="$(ls scripts -1v
-				| tail -n1
-				| sed 's/\.script//'
-				| sed 's/leviathan//')"
-
-			if [[ $1 -gt $highestSolvedLevel ]]; then
-				echo "$0: error: no level script for given level: $1" >&2
-				exit 1
-			fi
-			files="${OPTARG}" ;;
-		*) error "Unexpected option ${flag}" ;;
+		#*) error "Unexpected option ${flag}" ;;
 	esac
 done
+
+shift "$(($OPTIND -1))" #Discard flags found by 'getopts' from "$@"
+
+if [[ $iFlag == "true" && "$kFlag" == "true" ]]; then
+	error "i(nteractive) & k(eep) flags are mutually exclusive"
+fi
+
+if ! [[ $# -eq 1 || $# -eq 2 ]]; then
+	usage
+	error "unsupported number of arguments: $#: $@"
+else
+	if ! valid_wargame "$1"; then
+		error "invalid wargame: $1"
+	fi
+
+	if [[ $# -eq 1 ]]; then 
+		print_wargame_levels "$1"
+		exit 0
+	fi
+
+fi
+	
+
+
 readonly iFlag
 readonly kFlag
-
-if [[ -z "$kFlag" -a -z "$iFlag" ]]; then
-
 
 print_wargames
 print_wargame_levels
 exit 0
+#############################
 
+if echo $2 | grep -E -v -x -q "[0-9]+"; then
+	echo "$0: error: invalid argument #2 (level number): $1" >&2
+	exit 1
+fi
+if [[ $1 -lt 0 -o $1 -gt 34 ]]; then#There are 0-7 leviathan levels
+	echo "$0: error: invalid level number: $1" >&2
+	exit 1
+fi
+highestSolvedLevel="$(ls scripts -1v
+	| tail -n1
+	| sed 's/\.script//'
+	| sed 's/leviathan//')"
+
+if [[ $1 -gt $highestSolvedLevel ]]; then
+	echo "$0: error: no level script for given level: $1" >&2
+	exit 1
+fi
+
+###################
+##
+#########
 #	echo "$0: levels with scripts"
 #	ls -1v scripts | sed 's/^/   /g' | sed 's/\.script//g'
 
