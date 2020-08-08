@@ -47,7 +47,7 @@ function usage {
 #Args: No args
 function print_wargames {
 	echo "Wargames available:"
-	cut -f 1,6 -d ',' "$CONNECTIONS" | sed -E 's/(.*?),(.*?)/\t\2: \1/'
+	cut -f 1,5 -d ',' "$CONNECTIONS" | sed -E 's/(.*?),(.*?)/\t\2: \1/'
 }
 
 #Args: $1-wargame	NOTE: Assume caller has validated wargame
@@ -58,12 +58,22 @@ function print_wargame_levels {
 
 #Args: $1-wargame	#NOTE: Exits script if the wargame is invalid, otherwise quit
 function valid_wargame {
-	local wargame="$(cut -f 1,2 -d ',' "$CONNECTIONS" | grep -Ee "(^$1,)|(,$1$)" | cut -f 1 -d ',')"
+	local wargame="$(cut -f 1 -d ',' "$CONNECTIONS" | grep -Ee "^$1$")"
 	if [[ -z $wargame ]]; then
 		error "invalid wargame: $1"
 	fi
 	return 0
 }
+
+##Args: $1-wargame	Note:set the 'wargame' global
+#function set_wargame {
+#
+#}
+#
+##Args: $1-wargame	Note:sets the 'level' global
+#function set_level {  
+#
+#}
 
 ################################################################################
 #Script input validation
@@ -84,7 +94,10 @@ fi
 
 if ! [[ $# -eq 1 || $# -eq 2 ]]; then
 	usage
-	error "unsupported number of arguments: $#: $@"
+	if [[ $# -ne 0 ]]; then
+		error "unsupported number of arguments: $#: $@"
+	fi
+	exit 0
 else
 	if ! valid_wargame "$1"; then
 		error "invalid wargame: $1"

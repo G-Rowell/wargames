@@ -1,2 +1,2 @@
-bandit,ban,bandit.labs.overthewire.org,2220,33,OverTheWire
-leviathan,lev,leviathan.labs.overthewire.org,2223,7,OverTheWire
+bandit,bandit.labs.overthewire.org,2220,33,OverTheWire
+leviathan,leviathan.labs.overthewire.org,2223,7,OverTheWire
