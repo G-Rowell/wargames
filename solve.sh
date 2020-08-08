@@ -21,7 +21,7 @@ readonly PASSWORDS_DIR='meta/passwords/'
 iFlag='false'
 kFlag='false'
 wargame=''
-level=''
+levelScript=''
 #Set as readonly later
 
 ################################################################################
@@ -95,54 +95,52 @@ fi
 if ! [[ $# -eq 1 || $# -eq 2 ]]; then
 	usage
 	if [[ $# -ne 0 ]]; then
-		error "unsupported number of arguments: $#: $@"
+		error "unsupported number of arguments: $#, args: $*"
 	fi
 	exit 0
 else
 	if ! valid_wargame "$1"; then
 		error "invalid wargame: $1"
 	fi
+	wargame="$1"
 
 	if [[ $# -eq 1 ]]; then 
 		print_wargame_levels "$1"
 		exit 0
 	fi
 
+	local lowest="$(ls -1v "$wargame/scripts/" | head -n 1 | sed 's/\..*?$//')"
+	local highest="$(ls -1vr "$wargame/scripts/" | head -n 1 | sed 's/\..*?$//')"
+	
+	if [[ $2 =~ "^[0-9]+$" ]]; then
+		error "Arg: $2, is not a positive number" >&2
+	elif [[ $2 -lt $lowest || $2 -gt $highest ]]; then
+		error "$wargame only has levels between $lowest & $highest: $2" >&2
+	fi
+
+	levelScript="$(find "$wargame/scripts/" -name "^$2\..*?$")"
+	if [[ -n $levelScript ]]; then
+		error "no level script for given level: $2" >&2
+	fi
 fi
 	
+
+echo "Printing vars"
+echo "$iFlag"
+echo "$kFlag"
+echo "$wargame"
+echo "$levelScript"
 
 
 readonly iFlag
 readonly kFlag
+readonly wargame
+readonly levelScript
 
-print_wargames
-print_wargame_levels
+print_wargame_levels $wargame
 exit 0
 #############################
 
-if echo $2 | grep -E -v -x -q "[0-9]+"; then
-	echo "$0: error: invalid argument #2 (level number): $1" >&2
-	exit 1
-fi
-if [[ $1 -lt 0 -o $1 -gt 34 ]]; then#There are 0-7 leviathan levels
-	echo "$0: error: invalid level number: $1" >&2
-	exit 1
-fi
-highestSolvedLevel="$(ls scripts -1v
-	| tail -n1
-	| sed 's/\.script//'
-	| sed 's/leviathan//')"
-
-if [[ $1 -gt $highestSolvedLevel ]]; then
-	echo "$0: error: no level script for given level: $1" >&2
-	exit 1
-fi
-
-###################
-##
-#########
-#	echo "$0: levels with scripts"
-#	ls -1v scripts | sed 's/^/   /g' | sed 's/\.script//g'
 
 
 
