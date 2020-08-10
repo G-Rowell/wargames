@@ -21,7 +21,7 @@ readonly PASSWORDS_DIR='meta/passwords/'
 iFlag='false'
 kFlag='false'
 wargame=''
-level=
+level=0
 levelScript=''
 username=''
 password=''
@@ -76,8 +76,8 @@ function valid_level {
 	valid_wargame "$1"
 
 	#Make a main function and two vars below 'local'?
-	local lowest="$(ls -1v "$wargame/scripts/" | head -n 1 | sed -E 's/\..*?$//')"
-	local highest="$(ls -1vr "$wargame/scripts/" | head -n 1 | sed -E 's/\..*?$//')"
+	local lowest="$(ls -1v "$1/scripts/" | head -n 1 | sed -E 's/\..*?$//')"
+	local highest="$(ls -1vr "$1/scripts/" | head -n 1 | sed -E 's/\..*?$//')"
 	
 	if [[ $2 =~ "^[0-9]+$" ]]; then
 		error "Arg: $2, is not a positive number" >&2
@@ -102,6 +102,7 @@ while getopts 'ik' flag; do
 	case "${flag}" in
 		i) iFlag='true' ;;
 		k) kFlag='true' ;;
+		#TODO: Check the syntax of getopts, maybe need preceeeding ':'
 		#*) error "Unexpected option ${flag}" ;;
 	esac
 done
@@ -118,17 +119,20 @@ if ! [[ $# -eq 1 || $# -eq 2 ]]; then
 		error "unsupported number of arguments: $#, args: $*"
 	fi
 	exit 0
-else
-	if ! valid_wargame "$1"; then
-		error "invalid wargame: $1"
-	fi
-	wargame="$1"
+fi
 
-	if [[ $# -eq 1 ]]; then 
-		print_wargame_levels "$1"
-		exit 0
-	fi
+wargame="$1"
+level="$2"
 
+if ! valid_wargame "$wargame"; then
+	error "invalid wargame: $wargame"
+elif ! valid_level "$wargame" "$level"; then
+	error "invalid level: $level"
+fi
+
+if [[ $# -eq 1 ]]; then 
+	print_wargame_levels "$wargame"
+	exit 0
 fi
 	
 
@@ -156,9 +160,9 @@ readonly levelScript
 print_wargames
 print_wargame_levels $wargame
 exit 0
-#############################
 
-
+################################################################################
+#Solve the challenge OR
 fileCheck1="$(ls -A1 | grep -Ee '\.sshTemp\.txt' > /dev/null; echo $?)"
 fileCheck2="$(ls -A1 | grep -Ee '\.sshleviathan[0-9]+\.script' > /dev/null; echo $?)"
 if [[ "$fileCheck1" -eq 0 ]] || [[ "$fileCheck2" -eq 0 ]]; then
@@ -197,6 +201,7 @@ if [[ $iFlag = 'false' ]]; then
 	############################################################################
 	#Show the ssh session
 	#TODO: Handle colours properly (cat doesn't recognise colours)
+	#Does 'echo -e' work? allow backslash escapes?
 	cat .sshTemp.txt		
 
 	############################################################################
