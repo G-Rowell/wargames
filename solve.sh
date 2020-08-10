@@ -10,7 +10,7 @@
 #set -o nounset		#undefined variables are errors
 #set -o pipefail		#pipe are (kinda) evaluated (read 'man bash')
 
-#set -x				#Show commands as they are executed
+set -x				#Show commands as they are executed
 
 ################################################################################
 #Constant declarations
@@ -21,7 +21,13 @@ readonly PASSWORDS_DIR='meta/passwords/'
 iFlag='false'
 kFlag='false'
 wargame=''
+level=
 levelScript=''
+username=''
+password=''
+hostname=''
+port=''
+
 #Set as readonly later
 
 ################################################################################
@@ -65,15 +71,29 @@ function valid_wargame {
 	return 0
 }
 
-##Args: $1-wargame	Note:set the 'wargame' global
-#function set_wargame {
-#
-#}
-#
-##Args: $1-wargame	Note:sets the 'level' global
-#function set_level {  
-#
-#}
+#Args: $1-wargame $2-level
+function valid_level {
+	valid_wargame "$1"
+
+	#Make a main function and two vars below 'local'?
+	local lowest="$(ls -1v "$wargame/scripts/" | head -n 1 | sed -E 's/\..*?$//')"
+	local highest="$(ls -1vr "$wargame/scripts/" | head -n 1 | sed -E 's/\..*?$//')"
+	
+	if [[ $2 =~ "^[0-9]+$" ]]; then
+		error "Arg: $2, is not a positive number" >&2
+	elif [[ $2 -lt $lowest || $2 -gt $highest ]]; then
+		error "$1 only has levels between $lowest & $highest: $2" >&2
+	fi
+
+	#'find' is an utterly silly command, which has terrible regex formatting,
+		#defaults and design. EG. find "bandit/scripts" -regex 'bandit/scripts/2.*'
+		#how ridiculous is it that you have to provide the path twice!?!?!
+	levelScript="$(ls "$1/scripts/" | grep )"
+	if [[ -n $levelScript ]]; then
+		error "no level script for given level: $2" >&2
+	fi
+	return 0
+}
 
 ################################################################################
 #Script input validation
@@ -109,49 +129,8 @@ else
 		exit 0
 	fi
 
-	local lowest="$(ls -1v "$wargame/scripts/" | head -n 1 | sed 's/\..*?$//')"
-	local highest="$(ls -1vr "$wargame/scripts/" | head -n 1 | sed 's/\..*?$//')"
-	
-	if [[ $2 =~ "^[0-9]+$" ]]; then
-		error "Arg: $2, is not a positive number" >&2
-	elif [[ $2 -lt $lowest || $2 -gt $highest ]]; then
-		error "$wargame only has levels between $lowest & $highest: $2" >&2
-	fi
-
-	levelScript="$(find "$wargame/scripts/" -name "^$2\..*?$")"
-	if [[ -n $levelScript ]]; then
-		error "no level script for given level: $2" >&2
-	fi
 fi
 	
-
-echo "Printing vars"
-echo "$iFlag"
-echo "$kFlag"
-echo "$wargame"
-echo "$levelScript"
-
-
-readonly iFlag
-readonly kFlag
-readonly wargame
-readonly levelScript
-
-print_wargame_levels $wargame
-exit 0
-#############################
-
-
-
-
-
-
-fileCheck1="$(ls -A1 | grep -Ee '\.sshTemp\.txt' > /dev/null; echo $?)"
-fileCheck2="$(ls -A1 | grep -Ee '\.sshleviathan[0-9]+\.script' > /dev/null; echo $?)"
-if [[ "$fileCheck1" -eq 0 ]] || [[ "$fileCheck2" -eq 0 ]]; then
-	echo "$0: error: a temporary file is present"
-	exit 1
-fi
 
 ################################################################################
 #Variable setup
@@ -161,31 +140,82 @@ pass="$(cat passwords.txt | grep "^$1 .*$" | cut -d' ' -f2)"
 scriptFile="scripts/$user.script"
 parsedScriptFile=".ssh$user.script"
 
+echo "Printing vars"
+echo "$iFlag"
+echo "$kFlag"
+echo "$wargame"
+echo "$level"
+echo "$levelScript"
+
+
+readonly iFlag
+readonly kFlag
+readonly wargame
+readonly levelScript
+
+print_wargames
+print_wargame_levels $wargame
+exit 0
+#############################
+
+
+fileCheck1="$(ls -A1 | grep -Ee '\.sshTemp\.txt' > /dev/null; echo $?)"
+fileCheck2="$(ls -A1 | grep -Ee '\.sshleviathan[0-9]+\.script' > /dev/null; echo $?)"
+if [[ "$fileCheck1" -eq 0 ]] || [[ "$fileCheck2" -eq 0 ]]; then
+	echo "There are temporary file(s) present,"
+
+	while true; do
+	    read -p "do you wish to overwrite these temporary files?" answer 
+	    case $answer in
+	        [Yy]* ) make install; break;;
+	        [Nn]* ) exit;;
+	        * ) echo "Please answer yes or no.";;
+	    esac
+	done
+fi
+
 ################################################################################
-#Parse script file (add in echo of each command, to show what is being run)
+#Solve the challenge OR
+if [[ $iFlag = 'false' ]]; then
+	############################################################################
+	#Parse script file (add in echo of each command, to show what is being run)
+	#TODO: Investigate better ways to read commands, maybe `tee`
+	while IFS= read -r line; do
+		echo "echo '$ $line'"
+		echo "$line"
+	done < "$scriptFile" > "$parsedScriptFile" 
 
-while IFS= read -r line; do
-	echo "echo '$ $line'"
-	echo "$line"
-done < "$scriptFile" > "$parsedScriptFile"
+	############################################################################
+	#Start SSH session through `sshpass`
+	#Create ssh session, using 'sshpass' to send the password for the level,
+		#LogLevel=error to prevent 
+		#UserKnownHostsFile=/dev/null to prevent
+		#StrictHostKeyChecking=no to preve
+		#bash -s (-s has bash read commands from stdin)
+	sshpass -p "$password" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$username@$hostname" -p $port 'bash -s' < "$parsedScriptFile" > .sshTemp.txt 2>&1
+
+	############################################################################
+	#Show the ssh session
+	#TODO: Handle colours properly (cat doesn't recognise colours)
+	cat .sshTemp.txt		
+
+	############################################################################
+	#Clean the temporary files
+	if [[ $kFlag = 'false' ]]; then
+		rm .sshTemp.txt
+		rm "$parsedScriptFile"
+	fi 
 
 ################################################################################
-#Create ssh connection, using 'sshpass' to send the password for the level,
-# LogLevel=error to prevent 
-# UserKnownHostsFile=/dev/null to prevent
-# StrictHostKeyChecking=no to preve
-# bash -s (-s has bash read commands from stdin)
-
-sshpass -p "$pass" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$user"@leviathan.labs.overthewire.org -p 2223 'bash -s' < "$parsedScriptFile" > .sshTemp.txt 2>&1
-
-################################################################################
-#Final output & cleanup of temporary files
-
-if [[ $# -eq 2 -a $2 != "-nc" ]]; then #TODO: Fix this flag, noclean flag
-	cat .sshTemp.txt		#TODO: Handle colours properly (cat doesn't recognise colours)
-	rm .sshTemp.txt
-	rm "$parsedScriptFile"
-fi 
+#Perform interactive session, IE. don't solve the challenge, just log in
+else
+	#Create ssh session, using 'sshpass' to send the password for the level,
+		#LogLevel=error to prevent 
+		#UserKnownHostsFile=/dev/null to prevent
+		#StrictHostKeyChecking=no to preve
+	sshpass -p "$password" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$username@$hostname" -p $port
+	
+fi
 
 exit 0
 
