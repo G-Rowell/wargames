@@ -6,11 +6,11 @@
 ################################################################################
 #Set strict shell options
 
-#set -o errexit		#'errexit' - exit script on any error (non-0 return value)
-#set -o nounset		#undefined variables are errors
-#set -o pipefail		#pipe are (kinda) evaluated (read 'man bash')
+set -o errexit		#'errexit' - exit script on any error (non-0 return value)
+set -o nounset		#undefined variables are errors
+set -o pipefail		#pipe are (kinda) evaluated (read 'man bash')
 
-set -x				#Show commands as they are executed
+#set -x				#Show commands as they are executed
 
 ################################################################################
 #Constant declarations
@@ -20,14 +20,16 @@ readonly PASSWORDS_DIR='meta/passwords/'
 
 iFlag='false'
 kFlag='false'
+vFlag='true'
 wargame=''
 level=0
-levelScript=''
+scriptFile=''
+parsedScriptFile="meta/parsed.script"
+sshOutput='meta/sshLog.txt'
 username=''
 password=''
 hostname=''
 port=''
-
 #Set as readonly later
 
 ################################################################################
@@ -39,13 +41,21 @@ function error {
 	exit 1
 }
 
+#Args: $1-information/debug text
+function verbose {
+	if [[ $vFlag = 'true' ]]; then
+		echo "$0: $1"
+	fi
+}
+
 #Args: No args
 function usage {
 	echo "$0: usage: $0 <wargame>" >&2
-	echo "$0: usage: $0 [-ik] <wargame> [level number]" >&2
+	echo "$0: usage: $0 [-ikq] <wargame> [level number]" >&2
 	echo "$0: flags: '-k' keep temporary files, will prompt for deletion on next run" >&2
 	echo "$0: flags: '-i' login to the level, instead of solving it" >&2
-	echo -e "\t     note: these two flags are mutually exclusive" >&2
+	echo "$0: flags: '-q' decrease verbosity" >&2
+	echo -e "\t     note: 'k' & 'i' are mutually exclusive" >&2
 	print_wargames
 	#echo "$0: try: ./solve.sh --help for more information" >&2 #TODO: Implement?
 }
@@ -56,8 +66,9 @@ function print_wargames {
 	cut -f 1,5 -d ',' "$CONNECTIONS" | sed -E 's/(.*?),(.*?)/\t\2: \1/'
 }
 
-#Args: $1-wargame	NOTE: Assume caller has validated wargame
+#Args: $1-wargame
 function print_wargame_levels {
+	valid_wargame "$1"
 	echo "Levels with scripts:"
 	ls -1v "$1/scripts" | sed 's/\..*$//' | sed -E 's/^([0-9])$/0\1/' | column -c 20
 }
@@ -88,8 +99,9 @@ function valid_level {
 	#'find' is an utterly silly command, which has terrible regex formatting,
 		#defaults and design. EG. find "bandit/scripts" -regex 'bandit/scripts/2.*'
 		#how ridiculous is it that you have to provide the path twice!?!?!
-	levelScript="$(ls "$1/scripts/" | grep )"
-	if [[ -n $levelScript ]]; then
+		#TODO: Fix the below, and write for non .ssh scripts
+	levelScript="$(ls "$1/scripts/$2.ssh")"
+	if [[ -z $levelScript ]]; then
 		error "no level script for given level: $2" >&2
 	fi
 	return 0
@@ -98,10 +110,11 @@ function valid_level {
 ################################################################################
 #Script input validation
 
-while getopts 'ik' flag; do
+while getopts 'ikq' flag; do
 	case "${flag}" in
 		i) iFlag='true' ;;
 		k) kFlag='true' ;;
+		q) vFlag='false' ;;
 		#TODO: Check the syntax of getopts, maybe need preceeeding ':'
 		#*) error "Unexpected option ${flag}" ;;
 	esac
@@ -121,6 +134,16 @@ if ! [[ $# -eq 1 || $# -eq 2 ]]; then
 	exit 0
 fi
 
+if [[ $# -eq 1 ]]; then 
+	if valid_wargame "$wargame"; then
+		print_wargame_levels "$wargame"
+		exit 0
+	fi
+fi
+
+################################################################################
+#Variable setup
+
 wargame="$1"
 level="$2"
 
@@ -130,49 +153,54 @@ elif ! valid_level "$wargame" "$level"; then
 	error "invalid level: $level"
 fi
 
-if [[ $# -eq 1 ]]; then 
-	print_wargame_levels "$wargame"
-	exit 0
-fi
-	
-
-################################################################################
-#Variable setup
-
-user="leviathan$1"
-pass="$(cat passwords.txt | grep "^$1 .*$" | cut -d' ' -f2)"
-scriptFile="scripts/$user.script"
-parsedScriptFile=".ssh$user.script"
-
-echo "Printing vars"
-echo "$iFlag"
-echo "$kFlag"
-echo "$wargame"
-echo "$level"
-echo "$levelScript"
-
+scriptFile="$wargame/scripts/$level.ssh"
+username="$wargame$level"
+password="$(grep "meta/passwords/$wargame" -e "^$level " | cut -d ' ' -f 2)"
+hostname="$(grep 'meta/connections.txt' -e "^$wargame," | cut -d ',' -f 2)"
+port="$(grep 'meta/connections.txt' -e "^$wargame," | cut -d ',' -f 3)"
 
 readonly iFlag
 readonly kFlag
 readonly wargame
-readonly levelScript
+readonly level
+readonly scriptFile
+readonly parsedScriptFile
+readonly sshOutput
+readonly username
+readonly password
+readonly port
 
-print_wargames
-print_wargame_levels $wargame
-exit 0
+verbose "setup variables...notably username: $username"
+
+#echo "Vars:"
+#echo "$iFlag"
+#echo "$kFlag"
+#echo "$wargame"
+#echo "$level"
+#echo "$scriptFile"
+#echo "$parsedScriptFile"
+#echo "$sshOutput"
+#echo "$username"
+#echo "$password"
+#echo "$port"
+#echo "done"
 
 ################################################################################
-#Solve the challenge OR
-fileCheck1="$(ls -A1 | grep -Ee '\.sshTemp\.txt' > /dev/null; echo $?)"
-fileCheck2="$(ls -A1 | grep -Ee '\.sshleviathan[0-9]+\.script' > /dev/null; echo $?)"
-if [[ "$fileCheck1" -eq 0 ]] || [[ "$fileCheck2" -eq 0 ]]; then
+#Check for exisiting log/temp files
+if [[ -f $parsedScriptFile ]] || [[ -f $sshOutput ]]; then
 	echo "There are temporary file(s) present,"
 
 	while true; do
 	    read -p "do you wish to overwrite these temporary files?" answer 
 	    case $answer in
-	        [Yy]* ) make install; break;;
-	        [Nn]* ) exit;;
+	        [Yy]* ) 
+				rm -f "$sshOutput"
+				rm -f "$parsedScriptFile"
+				break;;
+
+	        [Nn]* )
+				echo "Not overwriting temporary files, and exiting"
+				exit 1;;
 	        * ) echo "Please answer yes or no.";;
 	    esac
 	done
@@ -184,6 +212,8 @@ if [[ $iFlag = 'false' ]]; then
 	############################################################################
 	#Parse script file (add in echo of each command, to show what is being run)
 	#TODO: Investigate better ways to read commands, maybe `tee`
+	verbose "processing the script"
+
 	while IFS= read -r line; do
 		echo "echo '$ $line'"
 		echo "$line"
@@ -196,18 +226,24 @@ if [[ $iFlag = 'false' ]]; then
 		#UserKnownHostsFile=/dev/null to prevent
 		#StrictHostKeyChecking=no to preve
 		#bash -s (-s has bash read commands from stdin)
-	sshpass -p "$password" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$username@$hostname" -p $port 'bash -s' < "$parsedScriptFile" > .sshTemp.txt 2>&1
+	verbose "starting the ssh session"
+
+	sshpass -p "$password" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$username@$hostname" -p $port 'bash -s' < "$parsedScriptFile" > "$sshOutput" 2>&1
 
 	############################################################################
 	#Show the ssh session
 	#TODO: Handle colours properly (cat doesn't recognise colours)
 	#Does 'echo -e' work? allow backslash escapes?
-	cat .sshTemp.txt		
+	verbose "==========Start of ssh session"
+
+	cat "$sshOutput"
+
+	verbose "==========End of ssh session"
 
 	############################################################################
 	#Clean the temporary files
 	if [[ $kFlag = 'false' ]]; then
-		rm .sshTemp.txt
+		rm "$sshOutput"
 		rm "$parsedScriptFile"
 	fi 
 
@@ -218,10 +254,13 @@ else
 		#LogLevel=error to prevent 
 		#UserKnownHostsFile=/dev/null to prevent
 		#StrictHostKeyChecking=no to preve
+	verbose "starting the sss session"
+
 	sshpass -p "$password" ssh -o LogLevel=error -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$username@$hostname" -p $port
 	
 fi
 
+verbose "done, exiting"
 exit 0
 
 ################################################################################
