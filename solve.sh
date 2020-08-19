@@ -170,7 +170,7 @@ readonly username
 readonly password
 readonly port
 
-verbose "setup variables...notably username: $username"
+verbose "variables are setup...notably username: $username"
 
 #echo "Vars:"
 #echo "$iFlag"
@@ -199,7 +199,8 @@ if [[ -f $parsedScriptFile ]] || [[ -f $sshOutput ]]; then
 				break;;
 
 	        [Nn]* )
-				echo "Not overwriting temporary files, and exiting"
+				echo "Not overwriting temporary files, located in ./meta/"
+				echo "Exiting"
 				exit 1;;
 	        * ) echo "Please answer yes or no.";;
 	    esac
