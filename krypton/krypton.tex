@@ -51,12 +51,32 @@
 
 \section*{Krypton}
 
+\subsection*{krypton0}
+%\pass{N/A}
+\chall We are given a string, and told that it is encoded in the \href{https://en.wikipedia.org/wiki/Base64}{\textit{Base-64}} scheme. This is a simple encoding, and can be both encoded and reversed with the \textbf{base64} program.
+\begin{lstlisting}
+echo "S1JZUFRPTklTR1JFQVQ=" | base64 -d
+KRYPTONISGREAT
+\end{lstlisting}
+
 \subsection*{krypton1}
 \pass{KRYPTONISGREAT}
-\chall Within .
+\chall This level provides us with a string encoded in \href{https://en.wikipedia.org/wiki/ROT13}{\textit{ROT-13}}. \textbf{tr} is a program which is used to translate one set of characters to another, it has many uses including shifting a ROT-13 cipher.
 \begin{lstlisting}
-grep 'password' bookmarks.html
+cat krypton2 | tr [A-MN-Z] [N-ZA-M]
+LEVEL TWO PASSWORD ROTTEN
 \end{lstlisting}
+\begin{lstlisting}[title=these sets handle both upper \& lower-case characters]
+tr [a-mn-zA-MN-Z] [n-za-mN-ZA-M]
+\end{lstlisting}
+
+%\subsection*{krypton2}
+%\pass{}
+%\chall
+%\begin{lstlisting}
+%
+%\end{lstlisting}
+
 
 \section*{Links \& resources}
 \begin{enumerate}
