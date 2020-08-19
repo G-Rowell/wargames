@@ -1,0 +1,5 @@
+ls -1 /krypton/
+cd /krypton/krypton1/
+
+cat README
+cat krypton2 | tr [A-MN-Z] [N-ZA-M]
