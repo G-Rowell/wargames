@@ -134,6 +134,12 @@ if ! [[ $# -eq 1 || $# -eq 2 ]]; then
 	exit 0
 fi
 
+
+################################################################################
+#Variable setup
+
+wargame="$1"
+
 if [[ $# -eq 1 ]]; then 
 	if valid_wargame "$wargame"; then
 		print_wargame_levels "$wargame"
@@ -141,17 +147,11 @@ if [[ $# -eq 1 ]]; then
 	fi
 fi
 
-################################################################################
-#Variable setup
-
-wargame="$1"
 level="$2"
 
-if ! valid_wargame "$wargame"; then
-	error "invalid wargame: $wargame"
-elif ! valid_level "$wargame" "$level"; then
-	error "invalid level: $level"
-fi
+#'valid_level' checks for a valid wargame as well as level,
+	#exits if either are not valid
+valid_level "$wargame" "$level"
 
 scriptFile="$wargame/scripts/$level.ssh"
 username="$wargame$level"
